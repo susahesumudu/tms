@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<body>
+    <h1>{{ object.user.username }}'s Profile</h1>
+    <p><strong>Bio:</strong> {{ object.bio }}</p>
+    <p><strong>Location:</strong> {{ object.location }}</p>
+  
+    {% if user.profile %}
+    <p>Welcome, {{ user.profile.user.username }}</p>
+      {% if object.avatar %}
+        <img src="{{ object.avatar.url }}" alt="Avatar" style="width: 150px; height: 150px;">
+    {% else %}
+        <p>No avatar uploaded.</p>
+    {% endif %}
+    <p><a href="{% url 'profile-edit' %}">Edit Profile</a></p>
+{% else %}
+    <p>No profile found for this user. <a href="{% url 'create_profile' %}">Create Profile</a></p>
+{% endif %}
+</body>
+</html>
