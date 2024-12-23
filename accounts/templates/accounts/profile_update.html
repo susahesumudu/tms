@@ -1,18 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Profile</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Profile
+{% endblock %}
+
+{% block content %}
     <h1>Edit Profile</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Save Changes</button>
     </form>
-   <p><a href="{% url 'profile_detail' %}">Back to Profile</a></p>
-   
-
-</body>
-</html>
+    <p><a href="{% url 'profile_detail' %}">Back to Profile</a></p>
+{% endblock %}

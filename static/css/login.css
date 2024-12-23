@@ -1,0 +1,76 @@
+/* Center the login box on the page */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f5;
+}
+
+.login-box {
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+/* Heading for the login page */
+.login-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #35405a;
+}
+
+/* Style for the login fields */
+.login-field {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.login-field label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.login-field input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Login button */
+.login-button {
+    background-color: #0c75c9;
+    color: white;
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.login-button:hover {
+    background-color: #0a5aa5;
+}
+
+/* Footer text or message */
+.login-footer {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #888;
+}
+
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}

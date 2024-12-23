@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ user.username }}'s Profile</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+{{ user.username }}'s Profile
+{% endblock %}
+
+{% block content %}
     <h1>{{ user.username }}'s Profile</h1>
 
     {% if user.profile %}
@@ -12,16 +12,16 @@
         <p><strong>Location:</strong> {{ user.profile.location }}</p>
 
         {% if user.profile.avatar %}
-            <img src="{{ user.profile.avatar.url }}" alt="Avatar" style="width: 150px; height: 150px;">
+          
+             <img src="{{ profile.avatar.url }}" alt="Avatar" style="width: 150px; height: 150px; border-radius: 50%;">
         {% else %}
             <p>No avatar uploaded.</p>
         {% endif %}
 
         <p><a href="{% url 'profile_edit' %}">Edit Profile</a></p>
     {% else %}
-        <p>No profile found for this user.   
-
+        <p>No profile found for this user.</p>
     {% endif %}
-     <a href="{% url 'dashboard' %}">Back to Profile</a></p>
-</body>
-</html>
+    
+    <p><a href="{% url 'dashboard_redirect' %}">Back to Dashboard</a></p>
+{% endblock %}

@@ -11,6 +11,25 @@ from .models import Profile
 from .forms import ProfileForm, LoginForm,SignupForm
 from django.contrib.auth.decorators import login_required
 from django.views import View
+from django.views.generic import TemplateView
+from django.http import HttpResponseForbidden
+
+class DashboardRedirectView(LoginRequiredMixin, TemplateView):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if user.is_superuser:
+            return redirect('/admin')  # Redirect to the Django admin interface
+
+ 
+
+        if user.groups.filter(name='Admin').exists():
+            return redirect('/admin')  # Redirect to Django admin
+        elif user.groups.filter(name='Teacher').exists():
+            return redirect('teacher_dashboard')
+        elif user.groups.filter(name='Student').exists():
+            return redirect('student_dashboard')
+
+        return HttpResponseForbidden("You don't have access to any dashboard.")
 
 
 @method_decorator(login_required, name='dispatch')
@@ -43,8 +62,25 @@ class LoginView(FormView):
             return self.form_invalid(form)
 
 
+
+
 class DashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'accounts/dashboard.html'
+    """
+    Redirect users to their specific dashboard based on role.
+    """
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        
+        # Check the user's groups
+        if user.groups.filter(name='Admin').exists():
+            return redirect('admin_dashboard')  # Redirect to admin dashboard
+        elif user.groups.filter(name='Teacher').exists():
+            return redirect('teacher_dashboard')  # Redirect to teacher dashboard
+        elif user.groups.filter(name='Student').exists():
+            return redirect('student_dashboard')  # Redirect to student dashboard
+
+        # Fallback if no role matches
+        return redirect('default_dashboard') 
 
 
 
