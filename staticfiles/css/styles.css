@@ -1,0 +1,51 @@
+header{position: fixed;
+}
+ 
+/* Footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+}
+/* Navbar Links */
+.nav-link {
+    font-size: 1rem;
+    font-weight: 500;
+    color: white !important; /* Ensures text visibility */
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #ffd700 !important; /* Gold color on hover */
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu .dropdown-item {
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #007bff;
+}
+
+/* Dropdown Toggle */
+.dropdown-toggle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: white !important;
+}
+
+.dropdown-toggle:hover {
+    text-decoration: none;
+    color: #ffd700 !important; /* Matches hover for links */
+}

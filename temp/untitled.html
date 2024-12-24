@@ -1,0 +1,63 @@
+
+    <div class="sidebar bg-dark text-white p-3">
+        <!-- User Info -->
+        <div class="user-info mb-10">
+            <p class="mb-1">Logged in as:</p>
+            <h5>{{ user.username }}</h5>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <ul class="nav flex-column">
+            {% for group in user.groups.all %}             
+              {% if group.name == 'Teacher' %}
+                  <!-- Teacher-specific links -->
+                     <h2>Manage</h2>
+                         <li class="nav-item d-flex justify-content-between">
+                        <a class="nav-link text-white" href="{% url 'teacher_dashboard' %}">
+                            Teacher Dashboard
+                        </a>
+                        <i class="fas fa-clipboard-list"></i>
+                    </li>
+
+            <!-- Course Section -->
+            <h3>Courses</h3>
+                 
+            <!-- Task Section -->
+            <h3>Tasks</h3>
+                   
+
+            <!-- Activity Section -->
+            <h3>Activities</h3>
+                   
+                    <ul>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Gradeing Students</a>
+                    </li>
+                    </ul>
+                {% elif group.name == 'Student' %}
+                    <!-- Student Features with icons -->
+                    <li class="nav-item d-flex justify-content-between">
+                       
+                        <i class="fas fa-clipboard-list"></i>
+                    </li>
+
+  <!-- Features for Students -->
+                   
+                 
+                    <li class="nav-item d-flex justify-content-between">
+                        <a class="nav-link text-white" href="#">
+                            Submit Work
+                        </a>
+                        <i class="fas fa-upload"></i>
+                    </li>
+                    <li class="nav-item d-flex justify-content-between">
+                        <a class="nav-link text-white" href="#">
+                            View Grades
+                        </a>
+                        <i class="fas fa-clipboard-check"></i>
+                   
+                    
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>

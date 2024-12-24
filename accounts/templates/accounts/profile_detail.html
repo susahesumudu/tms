@@ -1,27 +1,85 @@
 {% extends 'base.html' %}
+{% load static %} <!-- Ensure static tag is loaded for default avatar -->
 
 {% block title %}
 {{ user.username }}'s Profile
 {% endblock %}
 
+{% block header %}
+<h1>{{ user.username }}'s Profile</h1>
+{% if profile_edit_url %}
+    <a href="{{ profile_edit_url }}" class="btn btn-primary">Edit Profile</a>
+{% else %}
+    <p>Edit profile option is unavailable.</p>
+{% endif %}
+{% endblock %}
+
 {% block content %}
-    <h1>{{ user.username }}'s Profile</h1>
+<div class="container mt-5">
+    {% if profile %}
+    <div class="card text-center ">
+  <div class="card-header ">
+    <ul class="nav nav-pills card-header-pills  ">
+      <li class="nav-item ">
+        <a class="nav-link active " aria-current="true" href="#">Active</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="#">Link</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " aria-disabled="true">Disabled</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+   <div class="row">
+            <!-- First Column (Profile Info) -->
+            <div class="col-md-4">
+                <div class="card">
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="Avatar" style="width: 150px; height: 150px; border-radius: 50%;" class="card-img-top">
+                    {% else %}
+                        <img src="{% static 'default-avatar.png' %}" alt="Default Avatar" style="width: 150px; height: 150px; border-radius: 50%;" class="card-img-top">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">Profile Info</h5>
+                        <p><strong>Bio:</strong> {{ profile.bio|default:"No bio available" }}</p>
+                        <p><strong>Location:</strong> {{ profile.address|default:"No address available" }}</p>
+                        <p><strong>Phone:</strong> {{ profile.phone_number|default:"No phone number provided" }}</p>
+                        <p><strong>Gender:</strong> {{ profile.get_gender_display|default:"Not specified" }}</p>
+                        <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+            </div>
 
-    {% if user.profile %}
-        <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
-        <p><strong>Location:</strong> {{ user.profile.location }}</p>
-
-        {% if user.profile.avatar %}
-          
-             <img src="{{ profile.avatar.url }}" alt="Avatar" style="width: 150px; height: 150px; border-radius: 50%;">
-        {% else %}
-            <p>No avatar uploaded.</p>
-        {% endif %}
-
-        <p><a href="{% url 'profile_edit' %}">Edit Profile</a></p>
+            <!-- Second Column (Additional Details) -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Additional Details</h5>
+                        <p><strong>Work Experience:</strong></p>
+                        <ul>
+                            <li>Front End Developer, W3Schools (Jan 2015 - Current)</li>
+                            <li>Web Developer, Something.com (Mar 2012 - Dec 2014)</li>
+                            <li>Graphic Designer, DesignSomething.com (Jun 2010 - Mar 2012)</li>
+                        </ul>
+                        <p><strong>Skills:</strong></p>
+                        <ul>
+                            <li>Adobe Photoshop - 90%</li>
+                            <li>Photography - 80%</li>
+                            <li>Illustrator - 75%</li>
+                            <li>Media - 50%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% else %}
         <p>No profile found for this user.</p>
     {% endif %}
-    
-    <p><a href="{% url 'dashboard_redirect' %}">Back to Dashboard</a></p>
+</div>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div>
+        
 {% endblock %}

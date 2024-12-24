@@ -1,24 +1,21 @@
-<!-- templates/includes/navbar_auth.html -->
 
-
-    <div class="container-fluid">
-        <!-- Navbar content -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-      
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-                <li><a href="{% url 'profile_detail' %}">Profile</a></li>
-                <li><a href="{% url 'logout' %}">Logout</a></li>
-            {% else %}
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'signup' %}">Sign Up</a></li>
-            {% endif %}
-        
+<div class="container-fluid">
+    {% if user.is_authenticated %}
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center link-light text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if profile and profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="Avatar" width="36" height="36" class="rounded-circle me-2">
+                {% else %}
+                    <img src="" alt="Default Avatar" width="32" height="32" class="rounded-circle me-2">
+                {% endif %}
+                
+            </a>
+            <ul class="dropdown-menu text-small shadow dropdown-menu-end bg-dark" aria-labelledby="dropdownUser">
+                <li><a class="dropdown-item text-light" href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li><a class="dropdown-item text-light" href="{% url 'profile_detail' %}">Profile</a></li>
+                <li><hr class="dropdown-divider text-light"></li>
+                <li><a class="dropdown-item text-light" href="{% url 'logout' %}">Logout</a></li>
             </ul>
         </div>
-    </div>
-
-
- 
-
+        
+    {% endif %}

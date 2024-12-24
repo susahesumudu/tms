@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'accounts.context_processors.navbar_profile',  # Adjust based on your app name
             ],
         },
     },
@@ -132,3 +133,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/accounts/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+# URL for accessing media files in development
+MEDIA_URL = '/media/'
+
+# Path where uploaded media files will be stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

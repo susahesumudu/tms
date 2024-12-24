@@ -1,67 +1,50 @@
-<!-- templates/includes/sidebar.html -->
-
 {% if user.is_authenticated %}
-    <div class="sidebar bg-dark text-white p-3">
-        <!-- User Info -->
-        <div class="user-info mb-10">
-            <p class="mb-1">Logged in as:</p>
-            <h5>{{ user.username }}</h5>
-        </div>
 
-        <!-- Sidebar Menu -->
-        <ul class="nav flex-column">
-            {% for group in user.groups.all %}             
-              {% if group.name == 'Teacher' %}
-                  <!-- Teacher-specific links -->
-                     <h2>Manage</h2>
-                         <li class="nav-item d-flex justify-content-between">
-                        <a class="nav-link text-white" href="{% url 'teacher_dashboard' %}">
-                            Teacher Dashboard
-                        </a>
-                        <i class="fas fa-clipboard-list"></i>
-                    </li>
 
-            <!-- Course Section -->
-            <h3>Courses</h3>
-                 
-            <!-- Task Section -->
-            <h3>Tasks</h3>
-                   
+        <!-- Sidebar -->
+        <nav class="col-auto bg-dark text-white position-fixed p-3 shadow-sm" style="height: 80vh; width: 220px;">
+            <!-- Sidebar Header -->
+            <div class="text-center mb-3">
+                <h4 class="fw-bold">Main Panel</h4>
+            </div>
 
-            <!-- Activity Section -->
-            <h3>Activities</h3>
+            <!-- Navigation Links -->
+            <ul class="nav flex-column">
+              
+                <li class="nav-item mb-2">
                    
-                    <ul>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#">Gradeing Students</a>
-                    </li>
-                    </ul>
-                {% elif group.name == 'Student' %}
-                    <!-- Student Features with icons -->
-                    <li class="nav-item d-flex justify-content-between">
-                       
-                        <i class="fas fa-clipboard-list"></i>
-                    </li>
+                    <a href="{% url 'dashboard_redirect' %}" class="nav-link text-white d-flex align-items-center">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="#" class="nav-link text-white d-flex align-items-center">
+                        <i class="bi bi-box-seam me-2"></i> Course Plans
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="#" class="nav-link text-white d-flex align-items-center">
+                        <i class="bi bi-cart me-2"></i> Lesson Plans
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="#" class="nav-link text-white d-flex align-items-center">
+                        <i class="bi bi-people-fill me-2"></i> Weekly Time Table 
+                    </a>
+                </li>
+                  <li class="nav-item mb-2">
+                    <a href="#" class="nav-link text-white d-flex align-items-center">
+                        <i class="bi bi-people-fill me-2"></i> Weekly Time Table 
+                    </a>
+                </li>
+            </ul>
 
-  <!-- Features for Students -->
-                   
-                 
-                    <li class="nav-item d-flex justify-content-between">
-                        <a class="nav-link text-white" href="#">
-                            Submit Work
-                        </a>
-                        <i class="fas fa-upload"></i>
-                    </li>
-                    <li class="nav-item d-flex justify-content-between">
-                        <a class="nav-link text-white" href="#">
-                            View Grades
-                        </a>
-                        <i class="fas fa-clipboard-check"></i>
-                   
-                    
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
+            <!-- Footer Links -->
+            
+        </nav>
+
+       
+
+
+
 {% endif %}
-
