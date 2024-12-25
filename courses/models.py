@@ -46,14 +46,6 @@ class Course(models.Model):
     
 
 
-      
-
-
-
-
-
-
-
 class Module(models.Model):
     course = models.ForeignKey(Course, related_name='modules', on_delete=models.CASCADE)
     module_name = models.CharField(max_length=200)
@@ -68,8 +60,6 @@ class Module(models.Model):
         return self.module_name
    
         
-   
-
 
 class Task(models.Model):
     module = models.ForeignKey(Module, related_name='tasks', on_delete=models.CASCADE)
@@ -82,4 +72,57 @@ class Task(models.Model):
     updated_at = models.DateTimeField(auto_now=True)      # Automatically updated when the instance is saved
     task_duration_days =models.PositiveIntegerField()  # Course Duration in months
     def __str__(self):
-        return self.task_name
+        return (self.task_code + self.task_name)
+
+from django.db import models
+
+
+class Session(models.Model):
+    SESSION_TYPE_CHOICES = [
+        ('Knowledge-Based', 'Knowledge-Based'),
+        ('Hands-On', 'Hands-On'),
+        ('Integrated', 'Integrated'),
+    ]
+    
+    session_type = models.CharField(max_length=50, choices=SESSION_TYPE_CHOICES, help_text="Knowledge-Based: Theoretical, Hands-On: Practical, Integrated: Both Theoretical and Practical")
+    session_minutes = models.PositiveIntegerField(verbose_name="Session Duration (Minutes)")
+    session_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Session Cost",  null=True, 
+        blank=True)
+
+    def __str__(self):
+        return f"{self.session_type} - {self.session_minutes} mins"
+
+    def clean(self):
+        if self.session_cost < 0:
+            raise ValidationError("Activity cost cannot be negative.")
+
+
+class Activity(models.Model):
+    ACTIVITY_CATEGORY_CHOICES = [
+        ('Technical Knowledge', 'Technical Knowledge'),
+        ('Skill Development', 'Skill Development'),
+        ('Workplace Readiness', 'Workplace Readiness'),
+        ('Assessment', 'Assessment'),
+        ('Problem-Solving', 'Problem-Solving'),
+        ('Industry-Specific', 'Industry-Specific'),
+        ('Creative and Design', 'Creative and Design'),
+        ('Self-Learning', 'Self-Learning'),
+        ('Collaborative', 'Collaborative'),
+        ('Reflective and Feedback', 'Reflective and Feedback'),
+    ]
+
+    task = models.ForeignKey('Task', related_name='task_activities', on_delete=models.CASCADE)
+    activity_name = models.CharField(max_length=200)
+    activity_code = models.CharField(max_length=10, unique=True, verbose_name="Activity Code")
+    session = models.ForeignKey(Session, related_name='sessions', on_delete=models.CASCADE)
+    activity_type = models.CharField(max_length=50, choices=ACTIVITY_CATEGORY_CHOICES)
+    activity_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Activity Cost")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    no_of_sessions = models.PositiveIntegerField(default=1, verbose_name="Number of Sessions")
+
+    def __str__(self):
+        return f"{self.activity_code} - {self.activity_name}"
+
+
+

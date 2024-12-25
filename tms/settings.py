@@ -40,6 +40,10 @@ INSTALLED_APPS = [
 'accounts.apps.AccountsConfig',
 'dashboard.apps.DashboardConfig',
 'courses.apps.CoursesConfig',
+'activities.apps.ActivitiesConfig',
+'center.apps.CenterConfig',
+'enrollments.apps.EnrollmentsConfig',
+'schedules.apps.SchedulesConfig',
 
 ]
 

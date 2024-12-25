@@ -11,6 +11,10 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from io import TextIOWrapper
+from .models import Session, Activity
+
+
+
 
 # Custom export function for Course
 def export_courses_to_csv(modeladmin, request, queryset):
@@ -338,3 +342,47 @@ class TaskAdmin(admin.ModelAdmin):
 
 	    return render(request, 'admin/import_csv.html', {"title": "Import CSV Tasks"})
 
+
+
+
+@admin.register(Session)
+class SessionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'session_type', 'session_minutes', 'session_cost')
+    search_fields = ('session_type',)
+    list_filter = ('session_type',)
+    ordering = ('id',)
+    fields = ('session_type', 'session_minutes', 'session_cost')
+
+
+@admin.register(Activity)
+class ActivityAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'activity_code',
+        'activity_name',
+        'task',
+        'activity_type',
+        'session',
+        'activity_cost',
+        'no_of_sessions',
+        'created_at',
+        'updated_at',
+    )
+    search_fields = ('activity_code', 'activity_name', 'task__name', 'activity_type')
+    list_filter = ('activity_type', 'task', 'session')
+    ordering = ('id',)
+    fieldsets = (
+        (None, {
+            'fields': ('activity_code', 'activity_name', 'activity_type', 'task')
+        }),
+        ('Session Details', {
+            'fields': ('session', 'no_of_sessions')
+        }),
+        ('Cost Details', {
+            'fields': ('activity_cost',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )
+    readonly_fields = ('created_at', 'updated_at')
