@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 'center.apps.CenterConfig',
 'enrollments.apps.EnrollmentsConfig',
 'schedules.apps.SchedulesConfig',
-
+'predictions.apps.PredictionsConfig'
 ]
 
 MIDDLEWARE = [

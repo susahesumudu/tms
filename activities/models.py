@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User  # Assuming you're using Django's built-in User model
 from django.utils import timezone  # for timezone handling
-from courses.models import  Task
+from courses.models import  Activity,Session
 
 
 from django.contrib.auth.models import User
@@ -25,7 +25,7 @@ class GradingRubric(models.Model):
         return f"{self.criteria} ({self.max_points} points)"
 
 
-class Activity(models.Model):
+class MainActivity(models.Model):
     ACTIVITY_TYPES = [
         ('Exercise', 'Exercise'),
         ('Assignment', 'Assignment'),
@@ -35,36 +35,28 @@ class Activity(models.Model):
         ('Group', 'Group'),
     ]
     
-    SESSION_TYPES = [
-        ('Theory', 'Theory'),
-        ('Practical', 'Practical'),
-    ]
 
     MODE_TYPES = [
         ('Online', 'Online'),
         ('Video', 'Video'),
         ('Physical', 'Physical'),
     ]
-    task = models.ForeignKey(Task, related_name='activity_task', on_delete=models.CASCADE)
+    activity = models.ForeignKey(Activity, related_name='activity_activity', on_delete=models.CASCADE)
     activity_name = models.CharField(max_length=100)
     activity_code = models.CharField(max_length=10)
     description = models.TextField()
-    activity_type = models.CharField(max_length=15, choices=ACTIVITY_TYPES)
-    session_type = models.CharField(max_length=10, choices=SESSION_TYPES)
+    session = models.ForeignKey(Session, related_name='activity_session', on_delete=models.CASCADE)
     mode = models.CharField(max_length=10, choices=MODE_TYPES)
     minutes = models.FloatField()  # Hours required for this activity (could be practical or theoretical hours)
-
-    
     #publish_grading_rubric = models.BooleanField(default=False)  # Option to publish rubric
     deadline = models.DateTimeField()  # Deadline for submission
-    session_type = models.CharField(max_length=10, choices=SESSION_TYPES)
     efficacy_questions = models.ManyToManyField(CommonEfficacyQuestion, blank=True)
 
     def __str__(self):
         return self.tself.activity_name
 
 
-class LearningActivity(Activity):
+class LearningActivity(MainActivity):
     """Model for Learning-related activities, extending Activity."""
     learning_goal = models.TextField()  # The learning goal or outcome for the activity
     is_required = models.BooleanField(default=True)  # Whether this learning activity is required or optional
@@ -73,7 +65,7 @@ class LearningActivity(Activity):
         return f"Learning Activity: {self.activity_name}"
 
 
-class PracticingActivity(Activity):
+class PracticingActivity(MainActivity):
     """Model for Practicing-related activities, extending Activity."""
     practice_type = models.CharField(max_length=100)  # E.g., Individual, Group, etc.
     is_assessment_related = models.BooleanField(default=False)  # Whether this practice is linked to assessments
@@ -82,7 +74,7 @@ class PracticingActivity(Activity):
         return f"Practicing Activity: {self.activity_name}"
 
 
-class AssessmentActivity(Activity):
+class AssessmentActivity(MainActivity):
 
     ASSESSMENT_TYPES = [
         ('MCQ', 'MCQ'),
