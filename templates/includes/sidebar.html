@@ -9,6 +9,8 @@
             </div>
 
             <!-- Navigation Links -->
+              {% for group in user.groups.all %}
+                {% if group.name == 'Teacher' %}
             <ul class="nav flex-column">
               
                 <li class="nav-item mb-2">
@@ -38,9 +40,27 @@
                     </a>
                 </li>
             </ul>
+             {% elif group.name == 'Staff' %}
 
+              {% elif group.name == 'Student' %}
+                 <ul class="nav flex-column">
+              
+                <li class="nav-item mb-2">
+                   
+                    <a href="{% url 'dashboard_redirect' %}" class="nav-link text-white d-flex align-items-center">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="#" class="nav-link text-white d-flex align-items-center">
+                        <i class="bi bi-box-seam me-2"></i> Activity
+                    </a>
+                </li>
+             
+            </ul>
             <!-- Footer Links -->
-            
+            {% endif %}
+            {% endfor %}
         </nav>
 
        
