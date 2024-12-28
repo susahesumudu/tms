@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Plan</title>
+</head>
+<body>
+    <h1>Training Plan</h1>
+    <h2>Institute Name: {{ training_plan.institute_name }}</h2>
+    <p><strong>Occupation:</strong> {{ training_plan.occupation }}</p>
+    <p><strong>Trainer:</strong> {{ training_plan.trainer_name }}</p>
+    <p><strong>Module:</strong> {{ training_plan.module.module_name }} ({{ training_plan.module.module_code }})</p>
+    <p><strong>Date Prepared:</strong> {{ training_plan.date_prepared }}</p>
+    <p><strong>Date Revised:</strong> {{ training_plan.date_revised }}</p>
+
+    <h3>Weekly Plan</h3>
+    <p><strong>Week Number:</strong> {{ training_plan.week_number }}</p>
+    <p><strong>Tasks to Cover:</strong></p>
+    <p>{{ training_plan.tasks_to_cover }}</p>
+    <p><strong>Session Information:</strong></p>
+    <p>{{ training_plan.session_info }}</p>
+
+    <h3>Resources</h3>
+    <p><strong>Consumables Required:</strong></p>
+    <p>{{ training_plan.resources_required }}</p>
+    <p><strong>Special Services Needed:</strong></p>
+    <p>{{ training_plan.special_services }}</p>
+
+    <h3>Assessment Methods</h3>
+    <p>{{ training_plan.assessment_methods }}</p>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Plan Gantt Chart</title>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-bundle.min.js"></script>
+</head>
+<body>
+    <h1>Gantt Chart for {{ course_plan.course.course_name }}</h1>
+    <p>Batch Start Date: {{ course_plan.course.batch_set.first.from_date }}</p>
+    <p>Batch End Date: {{ course_plan.course.batch_set.first.to_date }}</p>
+
+    <div id="ganttChartContainer" style="width: 100%; height: 600px;"></div>
+
+    <script>
+        // Fetch the Gantt data from context
+        const ganttData = JSON.parse('{{ gantt_data|safe }}');
+
+        // Map data into AnyChart Gantt format
+        const chartData = ganttData.map((item) => ({
+            id: item.module_name,
+            name: item.module_name,
+            actualStart: item.to_date,
+            actualEnd: item.end_date,
+        }));
+
+        // Create a Gantt chart
+        anychart.onDocumentReady(function () {
+            const chart = anychart.ganttProject();
+
+            // Add data to the chart
+            chart.data(chartData);
+
+            // Configure the chart
+            chart.container("ganttChartContainer");
+            chart.draw();
+        });
+    </script>
+</body>
+</html>

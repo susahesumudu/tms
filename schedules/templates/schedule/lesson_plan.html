@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson Plan</title>
+</head>
+<body>
+    <h1>Lesson Plan</h1>
+    <h2>Training Centre: {{ lesson_plan.training_centre }}</h2>
+    <p><strong>Trade/Subject:</strong> {{ lesson_plan.trade_subject }}</p>
+    <p><strong>Module:</strong> {{ lesson_plan.module.module_name }} ({{ lesson_plan.module.module_code }})</p>
+    <p><strong>Task:</strong> {{ lesson_plan.task.task_name }}</p>
+    <p><strong>Expected Date of Commencement:</strong> {{ lesson_plan.expected_date_commencement }}</p>
+    <p><strong>Actual Date of Commencement:</strong> {{ lesson_plan.actual_date_commencement }}</p>
+    <p><strong>Completion Date:</strong> {{ lesson_plan.completion_date }}</p>
+
+    <h3>Preparation</h3>
+    <p><strong>Machinery, Tools, and Equipment:</strong></p>
+    <p>{{ lesson_plan.machinery_tools }}</p>
+    <p><strong>Instructional Materials:</strong></p>
+    <p>{{ lesson_plan.instructional_material }}</p>
+    <p><strong>Special Remarks:</strong></p>
+    <p>{{ lesson_plan.special_remarks }}</p>
+
+    <h3>Session Details</h3>
+    <p><strong>Topic/Subject:</strong> {{ lesson_plan.topic_subject }}</p>
+    <p><strong>Total Duration:</strong> {{ lesson_plan.total_duration }} minutes</p>
+    <p><strong>Learning Objectives:</strong> {{ lesson_plan.learning_objectives }}</p>
+
+    <h3>Teaching and Learning Activities</h3>
+    <p><strong>Trainer's Actions:</strong> {{ lesson_plan.teaching_activities }}</p>
+    <p><strong>Learner's Actions:</strong> {{ lesson_plan.learner_activities }}</p>
+    <p><strong>Resources & Visuals Required:</strong> {{ lesson_plan.resources_visuals }}</p>
+
+    <h3>Assessment Activities</h3>
+    <p>{{ lesson_plan.assessment_activities }}</p>
+
+    <h3>Conclusion</h3>
+    <p>{{ lesson_plan.conclusion }}</p>
+
+    <h3>Trainer Information</h3>
+    <p><strong>Name:</strong> {{ lesson_plan.trainer_name }}</p>
+    <p><strong>Signature:</strong> {{ lesson_plan.trainer_signature }}</p>
+    <p><strong>Date:</strong> {{ lesson_plan.date }}</p>
+</body>
+</html>

@@ -49,7 +49,7 @@ class Course(models.Model):
 class Module(models.Model):
     course = models.ForeignKey(Course, related_name='modules', on_delete=models.CASCADE)
     module_name = models.CharField(max_length=200)
-    moduel_code = models.CharField(max_length=200)
+    module_code = models.CharField(max_length=200)
     theory_hours = models.PositiveIntegerField()
     practical_hours = models.PositiveIntegerField()
     module_cost = models.DecimalField(max_digits=10, decimal_places=2)
@@ -72,9 +72,9 @@ class Task(models.Model):
     updated_at = models.DateTimeField(auto_now=True)      # Automatically updated when the instance is saved
     task_duration_days =models.PositiveIntegerField()  # Course Duration in months
     def __str__(self):
-        return (self.task_code + self.task_name)
+        return (self.task_name)
 
-from django.db import models
+
 
 
 class Session(models.Model):
@@ -83,14 +83,14 @@ class Session(models.Model):
         ('Hands-On', 'Hands-On'),
         ('Integrated', 'Integrated'),
     ]
-    
+    session_code = models.CharField(max_length=3,unique=True)
     session_type = models.CharField(max_length=50, choices=SESSION_TYPE_CHOICES, help_text="Knowledge-Based: Theoretical, Hands-On: Practical, Integrated: Both Theoretical and Practical")
     session_minutes = models.PositiveIntegerField(verbose_name="Session Duration (Minutes)")
     session_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Session Cost",  null=True, 
         blank=True)
 
     def __str__(self):
-        return f"{self.session_type} - {self.session_minutes} mins"
+        return f"{self.session_code}"
 
     def clean(self):
         if self.session_cost < 0:

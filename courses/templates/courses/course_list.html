@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>List of {{ model_name }}</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Course Name</th>
+            <th>Course Code</th>
+            <th>Duration</th>
+            <th>Fee</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for obj in object_list %}
+        <tr>
+            <td>{{ obj.course_name }}</td>
+            <td>{{ obj.course_code }}</td>
+            <td>{{ obj.course_duration_months }} months</td>
+            <td>{{ obj.course_fee }}</td>
+            <td>
+                <a href="{% url 'course_detail' obj.pk %}">View</a> |
+                <a href="{% url 'course_update' obj.pk %}">Edit</a> |
+                <a href="{% url 'course_delete' obj.pk %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'course_create' %}">Create New Course</a>
+{% endblock %}

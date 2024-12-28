@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block content %}
+<h2>{{ model_name }} Form</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+<a href="{% url redirect_url %}">Back</a>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block content %}
+<h2>List of {{ model_name_plural }}</h2>
+<table>
+   <thead>
+    <tr>
+        {% for label in field_labels %}
+        <th>{{ label }}</th>
+        {% endfor %}
+        <th>Actions</th>
+    </tr>
+</thead>
+
+   <tbody>
+    {% for obj in objects %}
+    <tr>
+        {% for field in fields %}
+        {% with obj|attr:field as value %}
+        <td>{{ value }}</td>
+        {% endwith %}
+        {% endfor %}
+        <td>
+            <a href="{% url detail_url obj.pk %}">View</a> |
+            <a href="{% url update_url obj.pk %}">Edit</a> |
+            <a href="{% url delete_url obj.pk %}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+
+</table>
+<a href="{% url create_url %}">Create New {{ model_name }}</a>
+{% endblock %}

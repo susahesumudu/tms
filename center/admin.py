@@ -32,3 +32,23 @@ class TrainingCenterAdmin(admin.ModelAdmin):
 
     def test_cbt(self, request):
         return render(request, 'admin/test.html', {"title": "Test"})
+
+
+from .models import Resource
+
+class ResourceAdmin(admin.ModelAdmin):
+    list_display = ('resource_name', 'resource_type', 'training_center', 'quantity', 'date_acquired')
+    list_filter = ('resource_type', 'training_center', 'date_acquired')
+    search_fields = ('resource_name', 'description', 'training_center__center_name')
+    ordering = ('training_center', 'resource_name')
+    fieldsets = (
+        (None, {
+            'fields': ('training_center', 'resource_name', 'resource_type', 'quantity')
+        }),
+        ('Additional Information', {
+            'fields': ('description', 'date_acquired'),
+            'classes': ('collapse',),
+        }),
+    )
+
+admin.site.register(Resource, ResourceAdmin)

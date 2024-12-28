@@ -1,33 +1,38 @@
-
-# Register your models here.
 from django.contrib import admin
-from .models import  LessonPlan, WeeklyPlan, TrainingPlan, CoursePlan
+from schedules.models import CoursePlan, TrainingPlan, WeeklyPlan, LessonPlan
 
+# Base Admin Configuration for Shared Features
+class PlanBaseAdmin(admin.ModelAdmin):
+    list_display = ("date_prepared",)
+    search_fields = ("date_prepared",)
+    list_filter = ("date_prepared",)
+    date_hierarchy = "date_prepared"
 
-@admin.register(LessonPlan)
-class LessonPlanAdmin(admin.ModelAdmin):
-    list_display = ('name','start_date', 'end_date', 'activity', 'no_minutes')
-    search_fields = ('activity__name', 'start_date', 'end_date')
-    list_filter = ('start_date', 'end_date')
-    ordering = ('start_date',)
-
-@admin.register(WeeklyPlan)
-class WeeklyPlanAdmin(admin.ModelAdmin):
-    list_display = ('name','start_date', 'end_date', 'task', 'no_practical_hrs', 'total_hours', 'total_minutes')
-    search_fields = ('task__name', 'start_date', 'end_date')
-    list_filter = ('start_date', 'end_date')
-    ordering = ('start_date',)
-
-@admin.register(TrainingPlan)
-class TrainingPlanAdmin(admin.ModelAdmin):
-    list_display = ('name','start_date', 'end_date', 'module', 'no_months')
-    search_fields = ('module__name', 'start_date', 'end_date')
-    list_filter = ('start_date', 'end_date')
-    ordering = ('start_date',)
-
+# Course Plan Admin
 @admin.register(CoursePlan)
-class CoursePlanAdmin(admin.ModelAdmin):
-    list_display = ('name','start_date', 'end_date', 'course', 'no_months')
-    search_fields = ('course__name', 'start_date', 'end_date')
-    list_filter = ('start_date', 'end_date')
-    ordering = ('start_date',)
+class CoursePlanAdmin(PlanBaseAdmin):
+    list_display = PlanBaseAdmin.list_display + ("course", "coordinator_name", "commencement_date", "completion_date")
+    search_fields = PlanBaseAdmin.search_fields + ("course__course_name", "coordinator_name")
+    list_filter = PlanBaseAdmin.list_filter + ("commencement_date", "completion_date")
+
+# Training Plan Admin
+@admin.register(TrainingPlan)
+class TrainingPlanAdmin(PlanBaseAdmin):
+    list_display = PlanBaseAdmin.list_display + ("module", "occupation", "week_number", "date_revised")
+    search_fields = PlanBaseAdmin.search_fields + ("module__module_name", "occupation")
+    list_filter = PlanBaseAdmin.list_filter + ("week_number", "date_revised")
+
+# Weekly Plan Admin
+@admin.register(WeeklyPlan)
+class WeeklyPlanAdmin(PlanBaseAdmin):
+    list_display = PlanBaseAdmin.list_display + ("course_plan", "week_number", "start_date", "end_date")
+    search_fields = PlanBaseAdmin.search_fields + ("course_plan__course__course_name", "week_number")
+    list_filter = PlanBaseAdmin.list_filter + ("start_date", "end_date")
+    filter_horizontal = ("modules_covered",)
+
+# Lesson Plan Admin
+@admin.register(LessonPlan)
+class LessonPlanAdmin(PlanBaseAdmin):
+    list_display = PlanBaseAdmin.list_display + ("module", "task", "trade_subject", "expected_date_commencement", "completion_date")
+    search_fields = PlanBaseAdmin.search_fields + ("module__module_name", "task__task_name", "trade_subject")
+    list_filter = PlanBaseAdmin.list_filter + ("expected_date_commencement", "completion_date")

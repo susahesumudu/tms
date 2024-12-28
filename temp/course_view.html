@@ -1,0 +1,420 @@
+from django.shortcuts import render
+
+# Create your views here.
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from .models import Course, Module, Task, Session, Activity
+from django.views.generic import DetailView
+from .models import Course, Module, Task, Session, Activity
+from .forms import CourseForm,ModuleForm,TaskForm  # Custom form for Course
+
+class BaseCreateUpdateView:
+    template_name = 'form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['model_name'] = self.model._meta.verbose_name.title()
+        context['redirect_url'] = self.success_url
+        return context
+
+
+# COURSE VIEWS
+class CourseListView(ListView):
+    model = Course
+    template_name = 'list.html'
+    context_object_name = 'objects'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        fields = ['course_name', 'course_code', 'entry_qualification', 'course_fee']
+        field_labels = {
+            'course_name': 'Course Title',
+            'course_code': 'Code',
+            'entry_qualification': 'Entry Requirements',
+            'course_fee': 'Fee (USD)',
+        }
+        context['fields'] = fields
+        context['field_labels'] = [field_labels[field] for field in fields]
+        context['data'] = [
+            {field: getattr(obj, field) for field in fields}
+            for obj in self.get_queryset()
+        ]
+        context['model_name_plural'] = self.model._meta.verbose_name_plural.title()
+        context['create_url'] = 'course_create'
+        context['detail_url'] = 'course_detail'
+        context['update_url'] = 'course_update'
+        context['delete_url'] = 'course_delete'
+        return context
+
+
+
+class CourseDetailView(DetailView):
+    model = Course
+    template_name = 'detail.html'
+    context_object_name = 'object'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['fields'] = [field.name for field in self.model._meta.fields if not field.name.startswith('_')]
+        context['model_name'] = self.model._meta.verbose_name.title()
+        context['update_url'] = 'course_update'
+        context['list_url'] = 'course_list'
+        return context
+
+
+class CourseCreateView(CreateView):
+    model = Course
+    form_class = CourseForm  # Use the custom form
+    template_name = 'form.html'
+    success_url = reverse_lazy('course_list')  # Redirect after form submission
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['redirect_url'] = 'course_list'  # Pass the named URL for redirection
+        context['model_name'] = self.model._meta.verbose_name.title()
+        return context
+
+    def form_valid(self, form):
+        print(f"Course {form.instance.course_name} is being created!")  # Debugging
+        return super().form_valid(form)
+
+
+class CourseUpdateView(UpdateView):
+    model = Course
+    template_name = 'form.html'
+    fields = '__all__'
+    success_url = reverse_lazy('course_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['redirect_url'] = 'course_list'  # Pass the named URL for redirection
+        context['model_name'] = self.model._meta.verbose_name.title()
+        return context
+
+class CourseDeleteView(DeleteView):
+    model = Course
+    template_name = 'confirm_delete.html'
+    success_url = reverse_lazy('course_list')  # Ensure this redirects to the course list
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['redirect_url'] = 'course_list'  # Named URL for the back link
+        return context
+
+
+
+
+# MODULE VIEWS
+
+class ModuleListView(ListView):
+    model = Module
+    template_name = 'list.html'
+    context_object_name = 'objects'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Specify the fields to display
+        fields = ['module_name', 'moduel_code', 'theory_hours', 'practical_hours', 'module_cost', 'module_duration_weeks']
+        context['fields'] = fields
+        field_labels = {
+            'module_name': 'Module Name',
+            'moduel_code': 'Code',
+            'theory_hours': 'Theory Hours',
+            'practical_hours': 'Practical Hours',
+            'module_cost': 'Cost (USD)',
+            'module_duration_weeks': 'Duration (Weeks)',
+        }
+        context['field_labels'] = [field_labels[field] for field in fields]
+        # Fetch the data for each module instance dynamically
+        context['data'] = [
+            {field: getattr(obj, field) for field in fields}
+            for obj in self.get_queryset()
+        ]
+        context['model_name_plural'] = self.model._meta.verbose_name_plural.title()
+        # Set URLs for CRUD actions
+        context['create_url'] = 'module_create'
+        context['detail_url'] = 'module_detail'
+        context['update_url'] = 'module_update'
+        context['delete_url'] = 'module_delete'
+        return context
+
+
+class ModuleDetailView(DetailView):
+    model = Module
+    template_name = 'detail.html'
+    context_object_name = 'object'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Dynamically fetch fields to display
+        context['fields'] = [field.name for field in self.model._meta.fields if not field.name.startswith('_')]
+        # Add model metadata for display
+        context['model_name'] = self.model._meta.verbose_name.title()
+        context['update_url'] = 'module_update'
+        context['list_url'] = 'module_list'
+        return context
+
+
+class ModuleCreateView(CreateView):
+    model = Module
+    template_name = 'form.html'
+    form_class = ModuleForm  # Use the custom form
+    success_url = reverse_lazy('module_list')  # Correctly reference the named URL
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['model_name'] = "Module"
+        context['redirect_url'] = 'module_list'  # Named URL for the back link
+        return context
+
+
+
+class ModuleUpdateView(BaseCreateUpdateView, UpdateView):
+    model = Module
+    template_name = 'form.html'
+    form_class = ModuleForm  
+    success_url = reverse_lazy('module_list')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['redirect_url'] = 'module_list'  # Pass the named URL for redirection
+        context['model_name'] = self.model._meta.verbose_name.title()
+        return context
+
+
+
+
+
+class ModuleDeleteView(DeleteView):
+    model = Module
+    template_name = 'confirm_delete.html'
+    success_url = reverse_lazy('module_list')  # Redirect to the module list after deletion
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['model_name'] = "Module"
+        context['redirect_url'] = 'module_list'  # Named URL for the back link
+        return context
+
+
+# Task List View
+class TaskListView(ListView):
+    model = Task
+    template_name = 'list.html'
+    context_object_name = 'objects'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Define fields and field labels
+        fields = ['task_name', 'task_code', 'theory_hours', 'practical_hours', 'task_cost', 'task_duration_days']
+        field_labels = {
+            'task_name': 'Task Name',
+            'task_code': 'Task Code',
+            'theory_hours': 'Theory Hours',
+            'practical_hours': 'Practical Hours',
+            'task_cost': 'Task Cost',
+            'task_duration_days': 'Duration (Days)',
+        }
+
+        # Populate context
+        context['fields'] = fields
+        context['field_labels'] = [field_labels[field] for field in fields]
+        context['data'] = [
+            {field: getattr(obj, field) for field in fields} for obj in self.get_queryset()
+        ]
+        context['model_name_plural'] = self.model._meta.verbose_name_plural.title()
+        context['create_url'] = 'task_create'
+        context['detail_url'] = 'task_detail'
+        context['update_url'] = 'task_update'
+        context['delete_url'] = 'task_delete'
+
+        return context
+
+
+# Task Detail View
+class TaskDetailView(DetailView):
+    model = Task
+    template_name = 'detail.html'
+    context_object_name = 'object'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Define fields and field labels
+        fields = ['task_name', 'task_code', 'theory_hours', 'practical_hours', 'task_cost', 'task_duration_days']
+        field_labels = {
+            'task_name': 'Task Name',
+            'task_code': 'Task Code',
+            'theory_hours': 'Theory Hours',
+            'practical_hours': 'Practical Hours',
+            'task_cost': 'Task Cost',
+            'task_duration_days': 'Duration (Days)',
+        }
+
+        # Populate context
+        context['fields'] = fields
+        context['field_labels'] = [field_labels[field] for field in fields]
+        context['model_name'] = self.model._meta.verbose_name.title()
+        context['update_url'] = 'task_update'
+        context['list_url'] = 'task_list'
+
+        return context
+
+
+class TaskCreateView(CreateView):
+    model = Task
+    template_name = 'form.html'
+    form_class = TaskForm  # Use a custom form to customize fields
+    success_url = reverse_lazy('task_list')  # Redirect to the task list view after creation
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['model_name'] = "Task"
+        context['redirect_url'] = 'task_list' # Correctly resolve the list URL
+        return context
+
+
+
+
+
+
+# Task Update View
+
+class TaskUpdateView(UpdateView):
+    model = Task
+    template_name = 'form.html'
+    form_class = TaskForm  # Custom form for Task
+    success_url = reverse_lazy('task_list')  # Redirect to the task list after updating
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['redirect_url'] = 'task_list'
+        context['model_name'] = self.model._meta.verbose_name.title()
+        print(context)  # Debugging: Ensure list_url is set correctly
+        return context
+
+
+
+
+
+# Task Delete View
+class TaskDeleteView(DeleteView):
+    model = Task
+    template_name = 'confirm_delete.html'
+    success_url = reverse_lazy('task_list')  # Redirect to the task list view after deletion
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['model_name'] = "Task"
+        context['redirect_url'] = 'task_list'  # Correctly resolve the list URL
+        return context
+
+
+
+# SESSION VIEWS
+class SessionListView(ListView):
+    model = Session
+    template_name = 'list.html'
+    context_object_name = 'objects'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['fields'] = [field.name for field in self.model._meta.fields if not field.name.startswith('_')]
+        context['model_name_plural'] = self.model._meta.verbose_name_plural.title()
+        context['field_labels'] = [field_labels[field] for field in fields]
+        context['data'] = [
+            {field: getattr(obj, field) for field in fields}
+            for obj in self.get_queryset()
+        ]
+        context['model_name_plural'] = self.model._meta.verbose_name_plural.title()
+        context['create_url'] = 'session_create'
+        context['detail_url'] = 'session_detail'
+        context['update_url'] = 'session_update'
+        context['delete_url'] = 'session_delete'
+        return context
+
+
+
+class SessionDetailView(DetailView):
+    model = Session
+    template_name = 'detail.html'
+    context_object_name = 'object'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['fields'] = [field.name for field in self.model._meta.fields if not field.name.startswith('_')]
+        context['model_name'] = self.model._meta.verbose_name.title()
+        context['update_url'] = 'session_update'
+        context['list_url'] = 'session_list'
+        return context
+
+
+class SessionCreateView(BaseCreateUpdateView, CreateView):
+    model = Session
+    fields = '__all__'
+    success_url = reverse_lazy('session_list')
+
+
+class SessionUpdateView(BaseCreateUpdateView, UpdateView):
+    model = Session
+    fields = '__all__'
+    success_url = reverse_lazy('session_list')
+
+
+class SessionDeleteView(DeleteView):
+    model = Session
+    template_name = 'confirm_delete.html'
+    success_url = reverse_lazy('session_list')
+
+
+
+# ACTIVITY VIEWS
+class ActivityListView(ListView):
+    model = Activity
+    template_name = 'list.html'
+    context_object_name = 'objects'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['fields'] = [field.name for field in self.model._meta.fields if not field.name.startswith('_')]
+        context['model_name_plural'] = self.model._meta.verbose_name_plural.title()
+        context['create_url'] = 'activity_create'
+        context['detail_url'] = 'activity_detail'
+        context['update_url'] = 'activity_update'
+        context['delete_url'] = 'activity_delete'
+        return context
+
+
+class ActivityDetailView(DetailView):
+    model = Activity
+    template_name = 'detail.html'
+    context_object_name = 'object'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['fields'] = [field.name for field in self.model._meta.fields if not field.name.startswith('_')]
+        context['model_name'] = self.model._meta.verbose_name.title()
+        context['update_url'] = 'activity_update'
+        context['list_url'] = 'activity_list'
+        return context
+
+
+class ActivityCreateView(BaseCreateUpdateView, CreateView):
+    model = Activity
+    fields = '__all__'
+    success_url = reverse_lazy('activity_list')
+
+
+class ActivityUpdateView(BaseCreateUpdateView, UpdateView):
+    model = Activity
+    fields = '__all__'
+    success_url = reverse_lazy('activity_list')
+
+
+class ActivityDeleteView(DeleteView):
+    model = Activity
+    template_name = 'confirm_delete.html'
+    success_url = reverse_lazy('activity_list')
+

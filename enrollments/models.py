@@ -5,7 +5,7 @@ from courses.models import Course
 
 # Define Batch model
 class Batch(models.Model):
-    course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='batch')
+    course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='batches')
     batch_code = models.CharField(max_length=50, unique=True)  # Batch number (unique)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -22,7 +22,7 @@ class Batch(models.Model):
     teachers = models.ManyToManyField(User, related_name='batches_as_teacher', blank=True)
 
     def __str__(self):
-        return self.batch_code
+        return f"{self.batch_code} ({self.from_date} - {self.to_date})"
     
     def save(self, *args, **kwargs):
         # Auto-calculate 'to_date' based on course duration
@@ -34,4 +34,7 @@ class Batch(models.Model):
             self.lock_date = self.from_date + timedelta(days=75)
 
         super().save(*args, **kwargs)
+
+  
+
 

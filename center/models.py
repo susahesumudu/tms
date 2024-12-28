@@ -98,3 +98,51 @@ class TrainingCenter(models.Model):
 
     def __str__(self):
         return self.center_name
+
+
+class Resource(models.Model):
+    RESOURCE_TYPE_CHOICES = [
+        ('Computer', 'Computer'),
+        ('Printer', 'Printer'),
+        ('Projector', 'Projector'),
+        ('Furniture', 'Furniture'),
+        ('Other', 'Other'),
+    ]
+
+    training_center = models.ForeignKey(
+        TrainingCenter,
+        on_delete=models.CASCADE,
+        related_name='resources',
+        help_text="The training center to which this resource belongs.",
+        verbose_name="Training Center"
+    )
+    resource_name = models.CharField(
+        max_length=100,
+        help_text="Name or type of the resource.",
+        verbose_name="Resource Name"
+    )
+    resource_type = models.CharField(
+        max_length=50,
+        choices=RESOURCE_TYPE_CHOICES,
+        help_text="Type of the resource.",
+        verbose_name="Resource Type"
+    )
+    quantity = models.PositiveIntegerField(
+        help_text="Number of this type of resource available.",
+        verbose_name="Quantity"
+    )
+    description = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Additional details about the resource.",
+        verbose_name="Description"
+    )
+    date_acquired = models.DateField(
+        blank=True,
+        null=True,
+        help_text="Date the resource was acquired.",
+        verbose_name="Date Acquired"
+    )
+    
+    def __str__(self):
+        return f"{self.resource_name} ({self.resource_type}) - {self.training_center.center_name}"

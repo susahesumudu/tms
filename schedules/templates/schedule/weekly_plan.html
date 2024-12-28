@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Plan</title>
+</head>
+<body>
+    <h1>Weekly Plan - Week {{ weekly_plan.week_number }}</h1>
+    <p><strong>Course:</strong> {{ weekly_plan.course_plan.course.course_name }}</p>
+    <p><strong>Start Date:</strong> {{ weekly_plan.start_date }}</p>
+    <p><strong>End Date:</strong> {{ weekly_plan.end_date }}</p>
+    <h2>Modules Covered</h2>
+    <ul>
+        {% for module in weekly_plan.modules_covered.all %}
+        <li>{{ module.module_name }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Tasks to Cover</h2>
+    <p>{{ weekly_plan.tasks_to_cover }}</p>
+    <h2>Activities</h2>
+    <p>{{ weekly_plan.activities }}</p>
+    <h2>Trainer</h2>
+    <p>{{ weekly_plan.trainer_name }}</p>
+    <h2>Resources Required</h2>
+    <p>{{ weekly_plan.resources_required }}</p>
+    <h2>Assessment Schedule</h2>
+    <p>{{ weekly_plan.assessment_schedule }}</p>
+</body>
+</html>

@@ -1,0 +1,17 @@
+
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<h2>{{ model_name }} Details</h2>
+<table>
+    {% for field in fields %}
+    <tr>
+        <th>{{ field|capfirst }}</th>
+        <td>{{ object|attr:field }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url list_url %}">Back to List</a>
+<a href="{% url update_url object.pk %}">Edit</a>
+{% endblock %}
