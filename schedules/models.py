@@ -1,14 +1,17 @@
 from django.db import models
 from enrollments.models import Batch
-from courses.models import Course, Module, Task, Session, Activity
-from center.models import TrainingCenter, Resource
+from courses.models import Course, Module, Task
+from center.models import Resource
 
 # Abstract Base Class for Shared Fields
 class PlanBase(models.Model):
     date_prepared = models.DateField()
-    
+    trade_subject = models.CharField(max_length=200)
+    occupation = models.CharField(max_length=200)    
+    date_revised = models.DateField(blank=True, null=True)
+
     class Meta:
-        abstract = True  # Mark as an abstract base class
+        abstract = True
 
 # Course Plan Model
 class CoursePlan(PlanBase):
@@ -23,44 +26,64 @@ class CoursePlan(PlanBase):
         return f"Course Plan for {self.course.course_name}"
 
 class CoursePlanModules(models.Model):
-    course_plan = models.ForeignKey(CoursePlan,on_delete=models.CASCADE,related_name="course_plan_moduels")
-    module = models.ForeignKey(Module,on_delete=models.CASCADE,related_name="course_plan_moduels_modules")
+    course_plan = models.ForeignKey(CoursePlan, on_delete=models.CASCADE, related_name="modules")
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="course_modules")
     start_date = models.DateField()
     end_date = models.DateField()
 
+    def __str__(self):
+        return f"Module {self.module.module_name} in {self.course_plan}"
 
 # Training Plan Model
 class TrainingPlan(PlanBase):
-    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="training_plans_module")
-    occupation = models.CharField(max_length=200)
-    date_revised = models.DateField(blank=True, null=True)
-    week_number = models.PositiveIntegerField()
-    session_info = models.TextField(help_text="Details of the sessions in the plan")
-    tasks_to_cover = models.TextField()
-    special_services = models.TextField(blank=True, null=True)
+    course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name="training_plan")
+    training_plan_title = models.TextField(help_text="Details of the sessions in the plan")
 
     def __str__(self):
-        return f"Training Plan for Module {self.module.module_name} - Week {self.week_number}"
+        return f"Training Plan for {self.course.course_name}"
+
+class TrainingPlanModule(models.Model):
+    training_plan = models.ForeignKey(TrainingPlan, on_delete=models.CASCADE, related_name="modules")    
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="training_modules")
+    week_number = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"Module {self.module.module_name} - Week {self.week_number} in {self.training_plan}"
+
+class TrainingPlanTask(models.Model):
+    training_plan_module = models.ForeignKey(TrainingPlanModule, on_delete=models.CASCADE, related_name="tasks")    
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="training_tasks")
+    start_date = models.DateField()
+    end_date = models.DateField() 
+
+    def __str__(self):
+        return f"Task {self.task.task_name} in {self.training_plan_module}"
 
 # Weekly Plan Model
 class WeeklyPlan(PlanBase):
-    course_plan = models.ForeignKey(CoursePlan, on_delete=models.CASCADE, related_name="weekly_plans_course_plan")
-    week_number = models.PositiveIntegerField()
-    start_date = models.DateField()
-    end_date = models.DateField()
-    modules_covered = models.ManyToManyField(Module, related_name="weekly_plans_modules")
-    tasks_to_cover = models.TextField(help_text="List of tasks or objectives for the week")
-    activities = models.TextField(help_text="Details about activities to be conducted during the week")
-    assessment_schedule = models.TextField(help_text="Planned assessments for the week")
+    course_plan_module = models.ForeignKey(CoursePlanModules, on_delete=models.CASCADE, related_name="weekly_plans")
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="weekly_plan_modules")
 
     def __str__(self):
-        return f"Week {self.week_number} Plan for {self.course_plan.course.course_name}"
+        return f"Weekly Plan for {self.course_plan_module}"
+
+
+class WeeklyTaskPlan(models.Model):
+    weekly_plan = models.ForeignKey(WeeklyPlan, on_delete=models.CASCADE, related_name="tasks")  # Add ForeignKey to WeeklyPlan
+    week_number = models.PositiveIntegerField()
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="weekly_tasks")
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+    def __str__(self):
+        return f"Weekly Task Plan for Week {self.week_number} - Task {self.task.task_name}"
+
 
 # Lesson Plan Model
 class LessonPlan(PlanBase):
-    trade_subject = models.CharField(max_length=200)
-    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="lesson_plans_module")
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="lesson_plans_task")
+    course_plan_module = models.ForeignKey(CoursePlanModules, on_delete=models.CASCADE, related_name="lesson_plans")
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="lesson_modules")
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="lesson_tasks")
     expected_date_commencement = models.DateField()
     actual_date_commencement = models.DateField(blank=True, null=True)
     completion_date = models.DateField(blank=True, null=True)
@@ -76,8 +99,7 @@ class LessonPlan(PlanBase):
     assessment_activities = models.TextField()
     conclusion = models.TextField()
     trainer_signature = models.CharField(max_length=200)
-    resources = models.ManyToManyField(Resource, related_name="training_plans_resources")
-
+    resources = models.ManyToManyField(Resource, related_name="lesson_resources")
 
     def __str__(self):
         return f"Lesson Plan for {self.module.module_name} - Task {self.task.task_name}"
