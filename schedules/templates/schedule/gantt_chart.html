@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gantt Chart</title>
+</head>
+<body>
+    <h1>Gantt Chart for {{ course_plan.course.course_name }}</h1>
+    <p>Coordinator: {{ course_plan.coordinator_name }}</p>
+    <p>Total Duration: {{ course_plan.total_duration }} hours</p>
+    <p>Overview: {{ course_plan.overview }}</p>
+    <h2>Gantt Chart</h2>
+    <img src="data:image/png;base64,{{ gantt_chart }}" alt="Gantt Chart">
+</body>
+</html>

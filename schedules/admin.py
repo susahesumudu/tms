@@ -1,5 +1,5 @@
 from django.contrib import admin
-from schedules.models import CoursePlan, TrainingPlan, WeeklyPlan, LessonPlan
+from schedules.models import CoursePlan, TrainingPlan, WeeklyPlan, LessonPlan,CoursePlanModules
 
 # Base Admin Configuration for Shared Features
 class PlanBaseAdmin(admin.ModelAdmin):
@@ -14,6 +14,12 @@ class CoursePlanAdmin(PlanBaseAdmin):
     list_display = PlanBaseAdmin.list_display + ("course", "coordinator_name", "commencement_date", "completion_date")
     search_fields = PlanBaseAdmin.search_fields + ("course__course_name", "coordinator_name")
     list_filter = PlanBaseAdmin.list_filter + ("commencement_date", "completion_date")
+
+@admin.register(CoursePlanModules)
+class CoursePlanModules(admin.ModelAdmin):
+    list_display = ('course_plan','start_date','end_date')
+    
+
 
 # Training Plan Admin
 @admin.register(TrainingPlan)

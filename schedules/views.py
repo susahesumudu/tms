@@ -2,6 +2,132 @@ from django.views.generic import TemplateView
 from django.http import Http404
 from .models import CoursePlan, TrainingPlan, WeeklyPlan, LessonPlan
 
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend for server-side rendering
+from django.shortcuts import render, get_object_or_404
+from .models import CoursePlan, CoursePlanModules
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from io import BytesIO
+import base64
+
+def generate_gantt_chart(request, course_plan_id):
+    course_plan = get_object_or_404(CoursePlan, id=course_plan_id)
+    modules = CoursePlanModules.objects.filter(course_plan=course_plan)
+
+    if not modules:
+        return render(request, 'schedule/no_modules.html', {'course_plan': course_plan})
+
+    task_names = [module.module.module_name for module in modules]
+    start_dates = [module.start_date for module in modules]
+    end_dates = [module.end_date for module in modules]
+    durations = [(end - start).days for start, end in zip(start_dates, end_dates)]
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for i, (task, start, duration) in enumerate(zip(task_names, start_dates, durations)):
+        ax.barh(i, duration, left=start, align='center', edgecolor='black')
+
+    ax.xaxis_date()
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d, %Y'))
+    plt.xticks(rotation=45)
+
+    ax.set_yticks(range(len(task_names)))
+    ax.set_yticklabels(task_names)
+    ax.set_xlabel("Timeline")
+    ax.set_ylabel("Modules")
+    plt.title(f"Gantt Chart for {course_plan.course.course_name}")
+
+    chart_buffer = BytesIO()
+    plt.tight_layout()
+    plt.savefig(chart_buffer, format="png")
+    plt.close(fig)
+    chart_buffer.seek(0)
+
+    gantt_chart = base64.b64encode(chart_buffer.getvalue()).decode('utf-8')
+
+    context = {
+        'course_plan': course_plan,
+        'gantt_chart': gantt_chart,
+    }
+    return render(request, 'schedule/gantt_chart.html', context)
+
+
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend for server-side rendering
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from .models import CoursePlan, CoursePlanModules
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter, landscape
+import tempfile
+
+def generate_gantt_chart_pdf(request, course_plan_id):
+    # Fetch the CoursePlan object
+    course_plan = get_object_or_404(CoursePlan, id=course_plan_id)
+    # Fetch related modules
+    modules = CoursePlanModules.objects.filter(course_plan=course_plan)
+
+    if not modules:
+        return HttpResponse("No modules found for this course plan.", status=404)
+
+    # Prepare data for the Gantt chart
+    task_names = [module.module.module_name for module in modules]
+    start_dates = [module.start_date for module in modules]
+    end_dates = [module.end_date for module in modules]
+    durations = [(end - start).days for start, end in zip(start_dates, end_dates)]
+
+    # Create Gantt chart
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for i, (task, start, duration) in enumerate(zip(task_names, start_dates, durations)):
+        ax.barh(i, duration, left=start, align='center', edgecolor='black')
+
+    ax.xaxis_date()
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d, %Y'))
+    plt.xticks(rotation=45)
+
+    ax.set_yticks(range(len(task_names)))
+    ax.set_yticklabels(task_names)
+    ax.set_xlabel("Timeline")
+    ax.set_ylabel("Modules")
+    plt.title(f"Gantt Chart for {course_plan.course.course_name}")
+
+    # Save plot to a temporary file
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
+        plt.tight_layout()
+        plt.savefig(temp_file.name, format="png")
+        plt.close(fig)
+
+        # Generate PDF with Gantt chart in landscape orientation
+        pdf_buffer = BytesIO()
+        pdf = canvas.Canvas(pdf_buffer, pagesize=landscape(letter))
+
+        # Add title and details
+        pdf.setFont("Helvetica-Bold", 16)
+        pdf.drawString(50, 550, f"Gantt Chart for {course_plan.course.course_name}")
+        pdf.setFont("Helvetica", 12)
+        pdf.drawString(50, 530, f"Coordinator: {course_plan.coordinator_name}")
+        pdf.drawString(50, 510, f"Total Duration: {course_plan.total_duration} hours")
+        pdf.drawString(50, 490, f"Overview: {course_plan.overview}")
+
+        # Draw Gantt chart image
+        pdf.drawImage(temp_file.name, 50, 150, width=700, height=400)
+
+        # Finalize and close the PDF
+        pdf.save()
+        pdf_buffer.seek(0)
+
+    # Return PDF as response
+    response = HttpResponse(pdf_buffer, content_type="application/pdf")
+    response['Content-Disposition'] = f'attachment; filename="gantt_chart_{course_plan_id}.pdf"'
+    return response
+
+
+
 class PlanBaseView(TemplateView):
     """
     A generic base view to handle plans with shared functionality.

@@ -2,7 +2,6 @@ from django.db import models
 from enrollments.models import Batch
 from courses.models import Course, Module, Task, Session, Activity
 from center.models import TrainingCenter, Resource
-from activities.models import AssessmentActivity
 
 # Abstract Base Class for Shared Fields
 class PlanBase(models.Model):
@@ -22,6 +21,13 @@ class CoursePlan(PlanBase):
 
     def __str__(self):
         return f"Course Plan for {self.course.course_name}"
+
+class CoursePlanModules(models.Model):
+    course_plan = models.ForeignKey(CoursePlan,on_delete=models.CASCADE,related_name="course_plan_moduels")
+    module = models.ForeignKey(Module,on_delete=models.CASCADE,related_name="course_plan_moduels_modules")
+    start_date = models.DateField()
+    end_date = models.DateField()
+
 
 # Training Plan Model
 class TrainingPlan(PlanBase):
