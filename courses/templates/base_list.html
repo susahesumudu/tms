@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% load nav_tags %}  <!-- Load custom template tags if using them -->
+
+{% block title %}{{ model.verbose_name_plural|capfirst }} List{% endblock %}
+
+{% block content %}
+
+   
+<!-- Generic layout for listing items -->
+<h1>{{ model.verbose_name_plural|capfirst }} List</h1>
+
+ 
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>
+                <!-- Action Buttons -->
+                <a href="{% url model.detail_url_name pk=item.pk %}" class="btn btn-info btn-sm">View</a>
+                <a href="{% url model.update_url_name pk=item.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url model.delete_url_name pk=item.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No {{ model.verbose_name_plural|lower }} found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

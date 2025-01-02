@@ -1,0 +1,14 @@
+{% extends 'base_detail.html' %}
+{% block content %}
+<h1>{{ model|capfirst }} Detail</h1>
+<p>Id: {{ item.id }}</p>
+<p>Course: {{ item.course }}</p>
+<p>Module_name: {{ item.module_name }}</p>
+<p>Module_code: {{ item.module_code }}</p>
+<p>Theory_hours: {{ item.theory_hours }}</p>
+<p>Practical_hours: {{ item.practical_hours }}</p>
+<p>Module_cost: {{ item.module_cost }}</p>
+<p>Created_at: {{ item.created_at }}</p>
+<p>Updated_at: {{ item.updated_at }}</p>
+<p>Module_duration_weeks: {{ item.module_duration_weeks }}</p>
+{% endblock %}

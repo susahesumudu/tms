@@ -1,31 +1,60 @@
-{% extends 'base.html' %}
+{% extends 'base_list.html' %}
 {% block content %}
-<h2>List of {{ model_name }}</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Course Name</th>
-            <th>Course Code</th>
-            <th>Duration</th>
-            <th>Fee</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for obj in object_list %}
-        <tr>
-            <td>{{ obj.course_name }}</td>
-            <td>{{ obj.course_code }}</td>
-            <td>{{ obj.course_duration_months }} months</td>
-            <td>{{ obj.course_fee }}</td>
-            <td>
-                <a href="{% url 'course_detail' obj.pk %}">View</a> |
-                <a href="{% url 'course_update' obj.pk %}">Edit</a> |
-                <a href="{% url 'course_delete' obj.pk %}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+<h1>{{ model|capfirst }} List</h1>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>course_name</th>
+      <th>course_code</th>
+      <th>entry_qualification</th>
+      <th>medium</th>
+      <th>course_duration_months</th>
+      <th>delivery_mode</th>
+      <th>course_mode</th>
+      <th>curriculum_availability</th>
+      <th>no_of_batches_per_year</th>
+      <th>max_students_per_batch</th>
+      <th>course_fee</th>
+      <th>course_cost</th>
+      <th>is_active</th>
+      <th>created_at</th>
+      <th>updated_at</th>
+      <th>theory_hrs</th>
+      <th>practical_hrs</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.course_name }}</td>
+      <td>{{ item.course_code }}</td>
+      <td>{{ item.entry_qualification }}</td>
+      <td>{{ item.medium }}</td>
+      <td>{{ item.course_duration_months }}</td>
+      <td>{{ item.delivery_mode }}</td>
+      <td>{{ item.course_mode }}</td>
+      <td>{{ item.curriculum_availability }}</td>
+      <td>{{ item.no_of_batches_per_year }}</td>
+      <td>{{ item.max_students_per_batch }}</td>
+      <td>{{ item.course_fee }}</td>
+      <td>{{ item.course_cost }}</td>
+      <td>{{ item.is_active }}</td>
+      <td>{{ item.created_at }}</td>
+      <td>{{ item.updated_at }}</td>
+      <td>{{ item.theory_hrs }}</td>
+      <td>{{ item.practical_hrs }}</td>
+      <td>
+        <a href="{% url 'courses:course_detail' pk=item.pk %}">View</a>
+        <a href="{% url 'courses:course_update' pk=item.pk %}">Edit</a>
+        <a href="{% url 'courses:course_delete' pk=item.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan='{{ column_count }}'>No {{ model|lower }} found.</td></tr>
+    {% endfor %}
+  </tbody>
 </table>
-<a href="{% url 'course_create' %}">Create New Course</a>
 {% endblock %}

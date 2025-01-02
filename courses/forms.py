@@ -1,29 +1,21 @@
 from django import forms
-from .models import Course,Module
 
-class CourseForm(forms.ModelForm):
+from django.apps import apps
+
+
+def generate_dynamic_form(app_name, model_name):
+    model = apps.get_model(app_label=app_name, model_name=model_name)
     class Meta:
-        model = Course
-        fields = '__all__'  # Specify fields explicitly if needed
+        model = model
+        fields = '__all__'
+    return type(f'{model_name}Form', (forms.ModelForm,), {'Meta': Meta})
 
 
-class ModuleForm(forms.ModelForm):
-    class Meta:
-        model = Module
-        fields = '__all__'  # Specify fields explicitly if needed
-
-
-class TaskForm(forms.ModelForm):
-    class Meta:
-        model = Module
-        fields = '__all__'  # Specify fields explicitly if needed
-
-class SessionForm(forms.ModelForm):
-    class Meta:
-        model = Module
-        fields = '__all__'  # Specify fields explicitly if needed
-
-class ActivityForm(forms.ModelForm):
-    class Meta:
-        model = Module
-        fields = '__all__'  # Specify fields explicitly if needed
+def create_dynamic_forms(app_name):
+    app_config = apps.get_app_config(app_name)
+    forms = {}
+    for model in app_config.get_models():
+        model_name = model.__name__.lower()
+        forms[model_name] = generate_dynamic_form(app_name, model_name)
+    return forms
+            

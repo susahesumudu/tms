@@ -1,0 +1,44 @@
+{% extends 'base_list.html' %}
+{% block content %}
+<h1>{{ model|capfirst }} List</h1>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>task</th>
+      <th>activity_name</th>
+      <th>activity_code</th>
+      <th>session</th>
+      <th>activity_type</th>
+      <th>activity_cost</th>
+      <th>created_at</th>
+      <th>updated_at</th>
+      <th>no_of_sessions</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.task }}</td>
+      <td>{{ item.activity_name }}</td>
+      <td>{{ item.activity_code }}</td>
+      <td>{{ item.session }}</td>
+      <td>{{ item.activity_type }}</td>
+      <td>{{ item.activity_cost }}</td>
+      <td>{{ item.created_at }}</td>
+      <td>{{ item.updated_at }}</td>
+      <td>{{ item.no_of_sessions }}</td>
+      <td>
+        <a href="{% url 'courses:activity_detail' pk=item.pk %}">View</a>
+        <a href="{% url 'courses:activity_update' pk=item.pk %}">Edit</a>
+        <a href="{% url 'courses:activity_delete' pk=item.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan='{{ column_count }}'>No {{ model|lower }} found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

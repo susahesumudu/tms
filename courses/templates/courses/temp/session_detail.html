@@ -1,0 +1,4 @@
+<h1>Session Detail</h1>
+<p>{{ item }}</p>
+<a href="{% url 'session_update' item.id %}">Edit</a>
+<a href="{% url 'session_delete' item.id %}">Delete</a>

@@ -1,0 +1,14 @@
+{% extends 'base_detail.html' %}
+{% block content %}
+<h1>{{ model|capfirst }} Detail</h1>
+<p>Id: {{ item.id }}</p>
+<p>Task: {{ item.task }}</p>
+<p>Activity_name: {{ item.activity_name }}</p>
+<p>Activity_code: {{ item.activity_code }}</p>
+<p>Session: {{ item.session }}</p>
+<p>Activity_type: {{ item.activity_type }}</p>
+<p>Activity_cost: {{ item.activity_cost }}</p>
+<p>Created_at: {{ item.created_at }}</p>
+<p>Updated_at: {{ item.updated_at }}</p>
+<p>No_of_sessions: {{ item.no_of_sessions }}</p>
+{% endblock %}

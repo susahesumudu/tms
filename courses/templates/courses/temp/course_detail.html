@@ -1,0 +1,4 @@
+<h1>Course Detail</h1>
+<p>{{ item }}</p>
+<a href="{% url 'course_update' item.id %}">Edit</a>
+<a href="{% url 'course_delete' item.id %}">Delete</a>

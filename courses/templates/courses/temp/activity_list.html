@@ -1,0 +1,6 @@
+<h1>Activity List</h1>
+<ul>
+{% for item in items %}
+<li><a href="{{ item.get_absolute_url }}">{{ item }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,44 @@
+{% extends 'base_list.html' %}
+{% block content %}
+<h1>{{ model|capfirst }} List</h1>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>course</th>
+      <th>module_name</th>
+      <th>module_code</th>
+      <th>theory_hours</th>
+      <th>practical_hours</th>
+      <th>module_cost</th>
+      <th>created_at</th>
+      <th>updated_at</th>
+      <th>module_duration_weeks</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.course }}</td>
+      <td>{{ item.module_name }}</td>
+      <td>{{ item.module_code }}</td>
+      <td>{{ item.theory_hours }}</td>
+      <td>{{ item.practical_hours }}</td>
+      <td>{{ item.module_cost }}</td>
+      <td>{{ item.created_at }}</td>
+      <td>{{ item.updated_at }}</td>
+      <td>{{ item.module_duration_weeks }}</td>
+      <td>
+        <a href="{% url 'courses:module_detail' pk=item.pk %}">View</a>
+        <a href="{% url 'courses:module_update' pk=item.pk %}">Edit</a>
+        <a href="{% url 'courses:module_delete' pk=item.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan='{{ column_count }}'>No {{ model|lower }} found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,4 @@
+<h1>Task Detail</h1>
+<p>{{ item }}</p>
+<a href="{% url 'task_update' item.id %}">Edit</a>
+<a href="{% url 'task_delete' item.id %}">Delete</a>

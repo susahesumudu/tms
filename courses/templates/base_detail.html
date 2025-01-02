@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ model|capfirst }} Detail{% endblock %}
+
+{% block content %}
+<!-- This is the generic layout for displaying detail of one item. -->
+<h1>{{ model|capfirst }} Detail</h1>
+<p>ID: {{ item.id }}</p>
+<p>Name: {{ item.name }}</p>
+<p>Description: {{ item.description }}</p>
+<!-- Add or override fields as needed in child templates. -->
+{% endblock %}
