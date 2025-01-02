@@ -1,7 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-
 from django.urls import reverse_lazy
-
 from django.apps import apps
 
 
@@ -68,3 +66,29 @@ class BaseDeleteView(DeleteView):
     def get_success_url(self):
             return reverse_lazy(f"{self.kwargs['app_name']}:{self.kwargs['model'].lower()}_list")
             
+
+
+
+from .models import *
+
+class ExerciseDetailView(DetailView):
+    model = Exercise
+    template_name = 'activities/exercise_detail_qiz.html'
+    context_object_name = 'exercise'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Retrieve the current exercise
+        exercise = self.object
+
+        # Get related questions
+        context['questions'] = exercise.questions.all()  # Use related_name 'questions'
+
+        # Get unique skills associated with all questions of this exercise
+        context['skills'] = Skill.objects.filter(question_skills__exercise=exercise).distinct()
+
+        # Get submissions related to this exercise
+        context['submissions'] = Submission.objects.filter(exercise=exercise)
+
+        return context

@@ -17,5 +17,13 @@ def generate_urlpatterns(app_name):
             path(f'{model_name}/<int:pk>/edit/', views.BaseUpdateView.as_view(), name=f'{model_name}_update', kwargs={'app_name': app_name, 'model': model_name}),
             path(f'{model_name}/<int:pk>/delete/', views.BaseDeleteView.as_view(), name=f'{model_name}_delete', kwargs={'app_name': app_name, 'model': model_name}),
         ]
+
+    urlpatterns += [
+        path(
+            'exercise/questions/<int:pk>',
+            views.ExerciseDetailView.as_view(),
+            name='exercise_custom_detail'
+        ),
+    ]
     return urlpatterns
             

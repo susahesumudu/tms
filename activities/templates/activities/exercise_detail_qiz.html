@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Exercise Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Exercise Details -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h4 mb-0">Exercise Details</h1>
+        </div>
+        <div class="card-body">
+            <h2 class="h5">Exercise</h2>
+            <p><strong>Title:</strong> {{ exercise.title }}</p>
+            <p><strong>Description:</strong> {{ exercise.description }}</p>
+            <p><strong>Difficulty:</strong> 
+                <span class="badge {% if exercise.get_difficulty_level_display == 'Easy' %}bg-success
+                                 {% elif exercise.get_difficulty_level_display == 'Medium' %}bg-warning
+                                 {% elif exercise.get_difficulty_level_display == 'Hard' %}bg-danger
+                                 {% endif %}">
+                    {{ exercise.get_difficulty_level_display }}
+                </span>
+            </p>
+            <p><strong>Maximum Score:</strong> {{ exercise.max_score }}</p>
+        </div>
+    </div>
+
+    <!-- Questions Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h5">Questions</h2>
+        </div>
+        <div class="card-body">
+            {% if questions %}
+                <ul class="list-group">
+                    {% for question in questions %}
+                        <li class="list-group-item">{{ question.text }}</li>
+                        <!-- Skills Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h5">Skills</h2>
+        </div>
+        <div class="card-body">
+            {% if skills %}
+                <ul class="list-group">
+                    {% for skill in skills %}
+                        <li class="list-group-item">{{ skill.skill_name }} (Score: {{ skill.skill_score }})</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No skills associated with this exercise.</p>
+            {% endif %}
+        </div>
+    </div>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No questions available for this exercise.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    
+
+    <!-- Submissions Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h5">Submissions</h2>
+        </div>
+        <div class="card-body">
+            {% if submissions %}
+                <ul class="list-group">
+                    {% for submission in submissions %}
+                        <li class="list-group-item">
+                            {{ submission.user.username }} - {{ submission.score }} points ({{ submission.submitted_at|date:"F j, Y, g:i a" }})
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No submissions for this exercise yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center mt-4">
+  <a href="/exercises/exercise" class="btn btn-secondary">Back to Exercise List</a>
+
+
+    </div>
+</div>
+{% endblock %}
