@@ -1,0 +1,15 @@
+{% extends 'base_detail.html' %}
+{% block content %}
+<h1>{ model|capfirst } Detail</h1>
+<p>Id: {{ item.id }}</p>
+<p>User: {{ item.user }}</p>
+<p>Quiz: {{ item.quiz }}</p>
+<p>Score: {{ item.score }}</p>
+<p>Graded_by: {{ item.graded_by }}</p>
+<p>Submitted_at: {{ item.submitted_at }}</p>
+<p>Start_time: {{ item.start_time }}</p>
+<p>End_time: {{ item.end_time }}</p>
+<p>Duration: {{ item.duration }}</p>
+<p>Quiz_is_completed: {{ item.quiz_is_completed }}</p>
+<p>Is_ontime_completed: {{ item.is_ontime_completed }}</p>
+{% endblock %}

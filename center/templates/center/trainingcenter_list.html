@@ -1,0 +1,53 @@
+{% extends 'base_list.html' %}
+{% block content %}
+<a href="{% url 'center:trainingcenter_create' %}" class="btn btn-sm btn-success mb-3">Add New</a>
+<h1>{{ model|capfirst }} List</h1>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>center_name</th>
+      <th>address</th>
+      <th>contact_number</th>
+      <th>email</th>
+      <th>registration_number</th>
+      <th>established_date</th>
+      <th>head_of_center</th>
+      <th>total_capacity</th>
+      <th>specialization</th>
+      <th>contact_person</th>
+      <th>business_reg_no</th>
+      <th>business_reg_copy</th>
+      <th>tvec_reg_copy</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.center_name }}</td>
+      <td>{{ item.address }}</td>
+      <td>{{ item.contact_number }}</td>
+      <td>{{ item.email }}</td>
+      <td>{{ item.registration_number }}</td>
+      <td>{{ item.established_date }}</td>
+      <td>{{ item.head_of_center }}</td>
+      <td>{{ item.total_capacity }}</td>
+      <td>{{ item.specialization }}</td>
+      <td>{{ item.contact_person }}</td>
+      <td>{{ item.business_reg_no }}</td>
+      <td>{{ item.business_reg_copy }}</td>
+      <td>{{ item.tvec_reg_copy }}</td>
+      <td>
+        <a href="{% url 'center:trainingcenter_detail' pk=item.pk %}">View</a>
+        <a href="{% url 'center:trainingcenter_update' pk=item.pk %}">Edit</a>
+        <a href="{% url 'center:trainingcenter_delete' pk=item.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan='{{ column_count }}'>No { model|lower } found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

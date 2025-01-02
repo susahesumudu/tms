@@ -1,0 +1,31 @@
+{% extends 'base_list.html' %}
+{% block content %}
+<a href="{% url 'activities:skill_create' %}" class="btn btn-sm btn-success mb-3">Add New</a>
+<h1>{{ model|capfirst }} List</h1>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>skill_name</th>
+      <th>skill_score</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.skill_name }}</td>
+      <td>{{ item.skill_score }}</td>
+      <td>
+        <a href="{% url 'activities:skill_detail' pk=item.pk %}">View</a>
+        <a href="{% url 'activities:skill_update' pk=item.pk %}">Edit</a>
+        <a href="{% url 'activities:skill_delete' pk=item.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan='{{ column_count }}'>No { model|lower } found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

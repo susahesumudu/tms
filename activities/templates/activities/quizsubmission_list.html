@@ -1,0 +1,47 @@
+{% extends 'base_list.html' %}
+{% block content %}
+<a href="{% url 'activities:quizsubmission_create' %}" class="btn btn-sm btn-success mb-3">Add New</a>
+<h1>{{ model|capfirst }} List</h1>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>user</th>
+      <th>quiz</th>
+      <th>score</th>
+      <th>graded_by</th>
+      <th>submitted_at</th>
+      <th>start_time</th>
+      <th>end_time</th>
+      <th>duration</th>
+      <th>quiz_is_completed</th>
+      <th>is_ontime_completed</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.user }}</td>
+      <td>{{ item.quiz }}</td>
+      <td>{{ item.score }}</td>
+      <td>{{ item.graded_by }}</td>
+      <td>{{ item.submitted_at }}</td>
+      <td>{{ item.start_time }}</td>
+      <td>{{ item.end_time }}</td>
+      <td>{{ item.duration }}</td>
+      <td>{{ item.quiz_is_completed }}</td>
+      <td>{{ item.is_ontime_completed }}</td>
+      <td>
+        <a href="{% url 'activities:quizsubmission_detail' pk=item.pk %}">View</a>
+        <a href="{% url 'activities:quizsubmission_update' pk=item.pk %}">Edit</a>
+        <a href="{% url 'activities:quizsubmission_delete' pk=item.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan='{{ column_count }}'>No { model|lower } found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

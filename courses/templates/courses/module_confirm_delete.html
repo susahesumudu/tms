@@ -1,6 +1,6 @@
 {% extends 'base_confirm_delete.html' %}
 {% block content %}
-<h1>Are you sure you want to delete this {{ model|lower }}</h1>
+<h1>Are you sure you want to delete this { model|lower }</h1>
 <form method='POST'>
   {% csrf_token %}
   <button type='submit'>Confirm Delete</button>

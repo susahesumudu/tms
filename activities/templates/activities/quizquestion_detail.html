@@ -1,0 +1,8 @@
+{% extends 'base_detail.html' %}
+{% block content %}
+<h1>{ model|capfirst } Detail</h1>
+<p>Id: {{ item.id }}</p>
+<p>Quiz: {{ item.quiz }}</p>
+<p>Text: {{ item.text }}</p>
+<p>Weight: {{ item.weight }}</p>
+{% endblock %}

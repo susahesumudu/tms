@@ -1,0 +1,39 @@
+{% extends 'base_list.html' %}
+{% block content %}
+<a href="{% url 'center:resource_create' %}" class="btn btn-sm btn-success mb-3">Add New</a>
+<h1>{{ model|capfirst }} List</h1>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>training_center</th>
+      <th>resource_name</th>
+      <th>resource_type</th>
+      <th>quantity</th>
+      <th>description</th>
+      <th>date_acquired</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.training_center }}</td>
+      <td>{{ item.resource_name }}</td>
+      <td>{{ item.resource_type }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.description }}</td>
+      <td>{{ item.date_acquired }}</td>
+      <td>
+        <a href="{% url 'center:resource_detail' pk=item.pk %}">View</a>
+        <a href="{% url 'center:resource_update' pk=item.pk %}">Edit</a>
+        <a href="{% url 'center:resource_delete' pk=item.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan='{{ column_count }}'>No { model|lower } found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

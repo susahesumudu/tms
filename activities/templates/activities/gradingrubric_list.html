@@ -1,0 +1,33 @@
+{% extends 'base_list.html' %}
+{% block content %}
+<a href="{% url 'activities:gradingrubric_create' %}" class="btn btn-sm btn-success mb-3">Add New</a>
+<h1>{{ model|capfirst }} List</h1>
+<table class='table'>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>criteria</th>
+      <th>description</th>
+      <th>max_points</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.criteria }}</td>
+      <td>{{ item.description }}</td>
+      <td>{{ item.max_points }}</td>
+      <td>
+        <a href="{% url 'activities:gradingrubric_detail' pk=item.pk %}">View</a>
+        <a href="{% url 'activities:gradingrubric_update' pk=item.pk %}">Edit</a>
+        <a href="{% url 'activities:gradingrubric_delete' pk=item.pk %}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan='{{ column_count }}'>No { model|lower } found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

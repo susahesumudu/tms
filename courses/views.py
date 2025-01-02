@@ -39,7 +39,7 @@ class BaseCreateView(CreateView):
         return [f"{self.kwargs['app_name']}/{self.kwargs['model'].lower()}_form.html"]
 
     def get_success_url(self):
-        return reverse_lazy(f"{self.kwargs['model'].lower()}_list")
+            return reverse_lazy(f"{self.kwargs['app_name']}:{self.kwargs['model'].lower()}_list")
 
 
 class BaseUpdateView(UpdateView):
@@ -53,7 +53,7 @@ class BaseUpdateView(UpdateView):
         return [f"{self.kwargs['app_name']}/{self.kwargs['model'].lower()}_form.html"]
 
     def get_success_url(self):
-        return reverse_lazy(f"{self.kwargs['model'].lower()}_list")
+            return reverse_lazy(f"{self.kwargs['app_name']}:{self.kwargs['model'].lower()}_list")
 
 
 class BaseDeleteView(DeleteView):
@@ -66,5 +66,5 @@ class BaseDeleteView(DeleteView):
         return [f"{self.kwargs['app_name']}/{self.kwargs['model'].lower()}_confirm_delete.html"]
 
     def get_success_url(self):
-        return reverse_lazy(f"{self.kwargs['model'].lower()}_list")
+            return reverse_lazy(f"{self.kwargs['app_name']}:{self.kwargs['model'].lower()}_list")
             

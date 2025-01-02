@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ model|capfirst }} List{% endblock %}
+
+{% block content %}
+<h1>{{ model|capfirst }} List</h1>
+<table>
+  <thead>
+    <tr>
+      {% for field in fields %}
+      <th>{{ field }}</th>
+      {% endfor %}
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+    <tr>
+      {% for field in fields %}
+      <td>{{ item|getattr:field }}</td>
+      {% endfor %}
+      <td>
+        <a href="{{ item|get_url:'detail' }}">View</a>
+        <a href="{{ item|get_url:'update' }}">Edit</a>
+        <a href="{{ item|get_url:'delete' }}">Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="{{ fields|length + 1 }}">No {{ model|lower }} found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

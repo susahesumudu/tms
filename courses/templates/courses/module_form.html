@@ -1,9 +1,9 @@
 {% extends 'base_form.html' %}
 {% block content %}
-<h1>Create / Update {{ model|capfirst }}</h1>
+<h1>Create / Update { model|capfirst }</h1>
 <form method='POST'>
   {% csrf_token %}
-  {{{{ form.as_p }}}}
+  {{ form.as_p }}
   <button type='submit'>Save</button>
 </form>
 {% endblock %}

@@ -24,7 +24,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('schedules/', include('schedules.urls')),
-  path('courses/', include('courses.urls')),
+    path('courses/', include('courses.urls')),
+    path('center/', include('center.urls')),
+    path('activities/', include('activities.urls')),
     path('dashboard/', include('dashboard.urls')),  # Include dashboard app URLs
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]
