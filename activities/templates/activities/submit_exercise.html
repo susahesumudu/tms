@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Exercise{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h4 mb-0">Submit Your Work</h1>
+        </div>
+        <div class="card-body">
+            <p>Please upload your work for the exercise: <strong>{{ exercise.title }}</strong></p>
+            <p><strong>Description:</strong> {{ exercise.description }}</p>
+            <p><strong>Deadline:</strong> {{ exercise.deadline|date:"F j, Y, g:i a" }}</p>
+        </div>
+    </div>
+
+    <!-- Submission Form -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h5 mb-0">Upload Your File</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'activities:exercise_submit_exercise' exercise.id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" class="btn btn-primary" value="Submit Work">
+</form>
+
+            <a href="{% url 'activities:exercise_custom_detail' exercise.id %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

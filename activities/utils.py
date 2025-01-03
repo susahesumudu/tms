@@ -1,7 +1,6 @@
 from django.apps import apps
 
 from django.urls import path
-
 from . import views
 
 
@@ -18,12 +17,28 @@ def generate_urlpatterns(app_name):
             path(f'{model_name}/<int:pk>/delete/', views.BaseDeleteView.as_view(), name=f'{model_name}_delete', kwargs={'app_name': app_name, 'model': model_name}),
         ]
 
-    urlpatterns += [
-        path(
-            'exercise/questions/<int:pk>',
-            views.ExerciseDetailView.as_view(),
-            name='exercise_custom_detail'
-        ),
-    ]
+        urlpatterns += [
+            path(
+                'exercise/questions/<int:pk>',
+                views.ExerciseDetailViews.as_view(),  # Make sure it's ExerciseDetailView
+                name='exercise_custom_detail'
+            ),
+            path(
+                'exercise/questions/submit/<int:exercise_id>',
+                views.SubmitExerciseView.as_view(),
+                name='exercise_submit_exercise'
+            ),
+            path(
+                'exercise/questions/mark-completed',
+             views.MarkQuestionCompletedView.as_view(), name='mark_question_completed'),            
+            
+            ]
+
+
+       
+
+
     return urlpatterns
             
+
+              

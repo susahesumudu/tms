@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import timedelta
+from django.conf import settings
 
 # Assuming Activity and Session models exist in courses.models
 from courses.models import Activity, Session
@@ -65,6 +66,16 @@ class Question(models.Model):
     def __str__(self):
         return f"{self.text[:50]}... [Weight: {self.weighting}]"
 
+class QuestionCompletion(models.Model):
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('student', 'question')  # Ensure a student can complete a question only once
+
+
+
 
 class Submission(models.Model):
     class GradingRubric(models.TextChoices):
@@ -72,7 +83,8 @@ class Submission(models.Model):
         INTERMEDIATE = 'Intermediate', 'Intermediate'
         ADVANCED = 'Advanced', 'Advanced'
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # The user submitting the exercise
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+ # The user submitting the exercise
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)  # The related exercise
     submitted_file = models.FileField(upload_to='submissions/')  # The uploaded submission file
     self_efficacy_score = models.PositiveIntegerField(null=True, blank=True)  # Quick access
@@ -118,6 +130,11 @@ class Submission(models.Model):
         exercise_title = self.exercise.title if self.exercise else "Unknown Exercise"
         username = self.user.username if self.user else "Unknown User"
         return f"{username} - {exercise_title} (Completed: {self.exercise_is_completed})"
+
+
+
+
+
 
 
 class Quiz(models.Model):

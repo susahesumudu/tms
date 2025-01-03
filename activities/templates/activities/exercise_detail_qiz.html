@@ -4,26 +4,34 @@
 
 {% block content %}
 <div class="container mt-4">
-    <!-- Exercise Details -->
-    <div class="card shadow mb-4">
-        <div class="card-header bg-primary text-white">
-            <h1 class="h4 mb-0">Exercise Details</h1>
+    <!-- Bootstrap Accordion for Exercise Details -->
+    <div class="accordion" id="exerciseAccordion">
+        <!-- Exercise Details -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingDetails">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">
+                    Exercise Details
+                </button>
+            </h2>
+            <div id="collapseDetails" class="accordion-collapse collapse show" aria-labelledby="headingDetails" data-bs-parent="#exerciseAccordion">
+                <div class="accordion-body">
+                    <h2 class="h5">Exercise</h2>
+                    <p><strong>Title:</strong> {{ exercise.title }}</p>
+                    <p><strong>Description:</strong> {{ exercise.description }}</p>
+                    <p><strong>Difficulty:</strong> 
+                        <span class="badge 
+                            {% if exercise.get_difficulty_level_display == 'Easy' %}bg-success
+                            {% elif exercise.get_difficulty_level_display == 'Medium' %}bg-warning
+                            {% elif exercise.get_difficulty_level_display == 'Hard' %}bg-danger
+                            {% endif %}">
+                            {{ exercise.get_difficulty_level_display }}
+                        </span>
+                    </p>
+                    <p><strong>Maximum Score:</strong> {{ exercise.max_score }}</p>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <h2 class="h5">Exercise</h2>
-            <p><strong>Title:</strong> {{ exercise.title }}</p>
-            <p><strong>Description:</strong> {{ exercise.description }}</p>
-            <p><strong>Difficulty:</strong> 
-                <span class="badge {% if exercise.get_difficulty_level_display == 'Easy' %}bg-success
-                                 {% elif exercise.get_difficulty_level_display == 'Medium' %}bg-warning
-                                 {% elif exercise.get_difficulty_level_display == 'Hard' %}bg-danger
-                                 {% endif %}">
-                    {{ exercise.get_difficulty_level_display }}
-                </span>
-            </p>
-            <p><strong>Maximum Score:</strong> {{ exercise.max_score }}</p>
-        </div>
-    </div>
+
 
     <!-- Questions Section -->
     <div class="card shadow mb-4">
@@ -31,37 +39,90 @@
             <h2 class="h5">Questions</h2>
         </div>
         <div class="card-body">
-            {% if questions %}
-                <ul class="list-group">
-                    {% for question in questions %}
-                        <li class="list-group-item">{{ question.text }}</li>
-                        <!-- Skills Section -->
-    <div class="card shadow mb-4">
-        <div class="card-header bg-primary text-white">
-            <h2 class="h5">Skills</h2>
+<div class="accordion" id="accordionQuestions">
+    {% if questions %}
+    <form method="post" action="{% url 'activities:mark_question_completed' %}" id="questionForm">
+        {% csrf_token %}
+        <input type="hidden" name="exercise_id" value="{{ exercise.id }}">
+        {% for question in questions %}
+            <div class="accordion-item" id="questionItem{{ question.id }}">
+                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                    <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#collapse{{ forloop.counter }}" 
+                            aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" 
+                            aria-controls="collapse{{ forloop.counter }}">
+                        Question {{ forloop.counter }}
+                    </button>
+                </h2>
+                <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" 
+                     aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionQuestions">
+                    <div class="accordion-body">
+                        <p><strong>Question:</strong> {{ question.text }}</p>
+                        <p>{{ question.weighting }}</p>
+                        <a href="{{ question.tutorial_url }}">{{ question.tutorial_url }}</a><br>
+                        <a href="{{ question.video_url }}">{{ question.video_url }}</a>
+                        <div class="form-check mt-3">
+                            <input class="form-check-input question-checkbox" type="checkbox" 
+                                   name="question_ids" 
+                                   value="{{ question.id }}" 
+                                   id="completedQuestion{{ question.id }}" 
+                                   {% if question.completed_by_user %}checked{% endif %}>
+                            <label class="form-check-label" for="completedQuestion{{ question.id }}">
+                                Mark as Completed
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="mt-4 text-end">
+            <button type="button" class="btn btn-primary" id="markAllComplete">Mark All as Completed</button>
         </div>
-        <div class="card-body">
-            {% if skills %}
-                <ul class="list-group">
-                    {% for skill in skills %}
-                        <li class="list-group-item">{{ skill.skill_name }} (Score: {{ skill.skill_score }})</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-muted">No skills associated with this exercise.</p>
-            {% endif %}
+    </form>
+
+    <script>
+        // Add event listener for "Mark All as Completed" button
+        document.getElementById("markAllComplete").addEventListener("click", function () {
+            // Select all checkboxes
+            const checkboxes = document.querySelectorAll(".question-checkbox");
+
+            // Check all checkboxes and change their parent background color
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = true;
+                const questionItem = document.getElementById(`questionItem${checkbox.value}`);
+                questionItem.classList.add("bg-success", "text-white");
+            });
+
+            // Submit the form (optional, if immediate submission is needed)
+            // document.getElementById("questionForm").submit();
+        });
+
+        // Add event listener for individual checkboxes
+        document.querySelectorAll(".question-checkbox").forEach((checkbox) => {
+            checkbox.addEventListener("change", function () {
+                const questionItem = document.getElementById(`questionItem${this.value}`);
+                if (this.checked) {
+                    questionItem.classList.add("bg-success", "text-white");
+                } else {
+                    questionItem.classList.remove("bg-success", "text-white");
+                }
+            });
+        });
+    </script>
+
+    {% else %}
+        <p class="text-muted">No questions available for this exercise.</p>
+    {% endif %}
+</div>
+
         </div>
     </div>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-muted">No questions available for this exercise.</p>
-            {% endif %}
-        </div>
-    </div>
-
-    
-
+</div>
+</div>
+<div class="container mt-4">
+    <!-- Bootstrap Accordion for Exercise Details -->
+    <div class="accordion" id="exerciseAccordion">
     <!-- Submissions Section -->
     <div class="card shadow mb-4">
         <div class="card-header bg-primary text-white">
@@ -69,24 +130,28 @@
         </div>
         <div class="card-body">
             {% if submissions %}
+                <p class="text-muted">You have already submitted your work:</p>
                 <ul class="list-group">
                     {% for submission in submissions %}
                         <li class="list-group-item">
-                            {{ submission.user.username }} - {{ submission.score }} points ({{ submission.submitted_at|date:"F j, Y, g:i a" }})
+                            {{ submission.student.username }} - 
+                            {{ submission.grade|default:"Not Graded" }} points
+                            ({{ submission.submitted_at|date:"F j, Y, g:i a" }})
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p class="text-muted">No submissions for this exercise yet.</p>
+                <p class="text-muted">You haven't submitted your work yet.</p>
+                <a href="{% url 'activities:exercise_submit_exercise' exercise.id %}" class="btn btn-primary">Submit</a>
             {% endif %}
         </div>
     </div>
-
+</div>
+</div>
     <!-- Back Button -->
     <div class="text-center mt-4">
-  <a href="/exercises/exercise" class="btn btn-secondary">Back to Exercise List</a>
-
-
+        <a href="{% url 'activities:exercise_list' %}" class="btn btn-secondary">Back to Exercise List</a>
     </div>
 </div>
+
 {% endblock %}

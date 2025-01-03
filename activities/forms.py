@@ -18,4 +18,11 @@ def create_dynamic_forms(app_name):
         model_name = model.__name__.lower()
         forms[model_name] = generate_dynamic_form(app_name, model_name)
     return forms
-            
+
+from django import forms
+from .models import Submission
+
+class SubmissionForm(forms.ModelForm):
+    class Meta:
+        model = Submission
+        fields = ['submitted_file']

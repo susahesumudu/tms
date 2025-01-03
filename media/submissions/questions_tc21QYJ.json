@@ -1,0 +1,153 @@
+[
+    {
+        "question": "What is the first step when starting a new presentation in PowerPoint?",
+        "options": [
+            "Open a blank presentation",
+            "Change the Slide Master",
+            "Insert a placeholder",
+            "Add a table"
+        ],
+        "answerIndex": 0
+    },
+    {
+        "question": "To modify the overall look and feel of your slides, you would primarily use the:",
+        "options": [
+            "Slide Master",
+            "Text Box",
+            "Animation Pane",
+            "Zoom feature"
+        ],
+        "answerIndex": 0
+    },
+    {
+        "question": "Where do you go to adjust the layout of your slides?",
+        "options": [
+            "Insert tab",
+            "View tab, then Slide Master",
+            "Animations tab",
+            "Home tab, Layout button"
+        ],
+        "answerIndex": 3
+    },
+    {
+        "question": "Which action should you take if you want to apply consistent formatting changes like font, color, and placeholders across multiple slides?",
+        "options": [
+            "Change each slide individually",
+            "Use the Slide Master view",
+            "Only use the Insert Layout button",
+            "Apply a table to every slide"
+        ],
+        "answerIndex": 1
+    },
+    {
+        "question": "To edit the master text styles (e.g., title, subtitle, content), you should:",
+        "options": [
+            "Click on Insert > Placeholder",
+            "Go to View > Slide Master",
+            "Change the presentation to Bold",
+            "Use the Animation tab"
+        ],
+        "answerIndex": 1
+    },
+    {
+        "question": "If you need to change the date placeholder or add a footer, you would typically do this in:",
+        "options": [
+            "Slide Master view",
+            "New Slide dialog",
+            "Home tab > Layout",
+            "Animations tab > Advanced Animation"
+        ],
+        "answerIndex": 0
+    },
+    {
+        "question": "To hide background graphics on a particular slide layout, you can:",
+        "options": [
+            "Use Hide Footer option",
+            "Right-click and select Hide Title",
+            "In Slide Master view, select 'Hide Background Graphics'",
+            "Change the font color to white"
+        ],
+        "answerIndex": 2
+    },
+    {
+        "question": "Where can you rename a slide layout?",
+        "options": [
+            "In the Home tab under Font options",
+            "In Slide Master view by right-clicking the layout",
+            "Using the Insert > Slide Master command",
+            "By typing directly on the slide thumbnail in Normal view"
+        ],
+        "answerIndex": 1
+    },
+    {
+        "question": "Which of the following is NOT typically done in Slide Master view?",
+        "options": [
+            "Inserting placeholders",
+            "Changing the theme or background style",
+            "Adjusting slide size",
+            "Applying specific transitions to individual slides"
+        ],
+        "answerIndex": 3
+    },
+    {
+        "question": "To return to the normal editing mode after customizing your Slide Master, you should:",
+        "options": [
+            "Close Master View",
+            "Reset the slide layout",
+            "Click Insert > Layout",
+            "Change Font color"
+        ],
+        "answerIndex": 0
+    },
+    {
+        "question": "To emphasize text on a slide, which formatting options can you use?",
+        "options": [
+            "Bold, italic, underline, text shadow, highlight",
+            "Slide Master only",
+            "Adding a table",
+            "Changing slide size"
+        ],
+        "answerIndex": 0
+    },
+    {
+        "question": "To organize your presentation into distinct sections, you can:",
+        "options": [
+            "Change the font to italic",
+            "Add a new placeholder",
+            "Use the 'Add Section' feature",
+            "Apply a new theme color"
+        ],
+        "answerIndex": 2
+    },
+    {
+        "question": "To zoom in and focus on specific parts of your slide, use the:",
+        "options": [
+            "Zoom feature",
+            "Hide background graphic option",
+            "Clear all formatting button",
+            "Insert Slide Master"
+        ],
+        "answerIndex": 0
+    },
+    {
+        "question": "If you want to apply transitions or animations to your slides, which area of PowerPoint would you typically use?",
+        "options": [
+            "View tab > Master",
+            "Insert tab > Shapes",
+            "Animations tab or Transitions tab",
+            "Home tab > Layout"
+        ],
+        "answerIndex": 2
+    },
+    {
+        "question": "To quickly format text back to its original default style, you can:",
+        "options": [
+            "Click 'Clear All Formatting'",
+            "Change the theme color",
+            "Insert a new text box",
+            "Add a section"
+        ],
+        "answerIndex": 0
+    }
+]
+
