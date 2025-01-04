@@ -1,0 +1,14 @@
+
+{% extends 'base.html' %}
+{% block title %}Activity Detail{% endblock %}
+
+{% block content %}
+
+
+<h2>Grade Submission: {{ submission.activity.title }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Marks</button>
+</form>
+{% endblock %}

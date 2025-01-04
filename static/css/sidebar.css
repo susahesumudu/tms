@@ -85,3 +85,27 @@
         margin-left: 0;
     }
 }
+
+  /* Ensure the sidebar does not overlap the navbar */
+    #sidebar {
+        position: fixed;
+        top: 56px; /* Height of the navbar */
+        left: 0;
+        bottom: 0;
+        width: 220px;
+        transition: all 0.3s ease;
+    }
+
+    #sidebar .nav-link {
+        display: flex;
+        align-items: center;
+    }
+
+    #sidebar .nav-text {
+        display: inline;
+        transition: opacity 0.3s ease;
+    }
+
+    main {
+        transition: margin-left 0.3s ease;
+    }

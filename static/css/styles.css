@@ -56,3 +56,35 @@ footer {
     text-decoration: none;
     color: #ffd700 !important; /* Matches hover for links */
 }
+
+/* Navbar fixed at the top */
+header.navbar {
+    z-index: 1050;
+}
+
+/* Sidebar fixed to the left */
+#sidebarMenu {
+    height: calc(100vh - 56px); /* Full height minus navbar */
+    overflow-y: auto; /* Enable scrolling for the sidebar if content exceeds height */
+    top: 56px; /* Align below the navbar */
+    z-index: 1040;
+}
+
+/* Main content scrolling */
+#main-content {
+    height: calc(100vh - 56px); /* Full height minus navbar */
+    overflow-y: auto; /* Enable vertical scrolling for content */
+    padding-bottom: 1rem; /* Space for footer */
+}
+
+/* Footer fixed to the bottom (optional) */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 220px; /* Adjust to match sidebar width */
+    right: 0;
+    background-color: #f8f9fa;
+    z-index: 1030;
+    padding: 0.5rem;
+    text-align: center;
+}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Create/Edit Grading Rubric{% endblock %}
+
+{% block content %}
+<h2>{% if rubric.pk %}Edit Grading Rubric{% else %}Create Grading Rubric{% endif %}</h2>
+
+<form method="post" class="form-container">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="id_criteria">Criteria:</label>
+        {{ form.criteria }}
+    </div>
+    <div class="form-group">
+        <label for="id_description">Description:</label>
+        {{ form.description }}
+    </div>
+    <div class="form-group">
+        <label for="id_max_points">Maximum Points:</label>
+        {{ form.max_points }}
+    </div>
+    <div class="form-group">
+        <label for="id_points_awarded">Points Awarded (if grading):</label>
+        {{ form.points_awarded }}
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn">Save</button>
+    </div>
+</form>
+
+
+{% endblock %}
+

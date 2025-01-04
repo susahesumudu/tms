@@ -2,11 +2,5 @@
 {% block title %}{{ model|capfirst }} Form{% endblock %}
 
 {% block content %}
-<!-- Generic layout for create/update forms -->
-<h1>{{ model|capfirst }} Form</h1>
-<form method="POST">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Save</button>
-</form>
+
 {% endblock %}

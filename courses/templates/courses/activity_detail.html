@@ -1,14 +1,67 @@
 {% extends 'base_detail.html' %}
 {% block content %}
-<h1>{ model|capfirst } Detail</h1>
-<p>Id: {{ item.id }}</p>
-<p>Task: {{ item.task }}</p>
-<p>Activity_name: {{ item.activity_name }}</p>
-<p>Activity_code: {{ item.activity_code }}</p>
-<p>Session: {{ item.session }}</p>
-<p>Activity_type: {{ item.activity_type }}</p>
-<p>Activity_cost: {{ item.activity_cost }}</p>
-<p>Created_at: {{ item.created_at }}</p>
-<p>Updated_at: {{ item.updated_at }}</p>
-<p>No_of_sessions: {{ item.no_of_sessions }}</p>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Activity Detail</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-borderless">
+                <tbody>
+                    <tr>
+                        <th scope="row" class="text-end">ID:</th>
+                        <td>{{ item.id }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-end">Task:</th>
+                        <td>{{ item.task }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-end">Activity Name:</th>
+                        <td>{{ item.activity_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-end">Activity Code:</th>
+                        <td>{{ item.activity_code }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-end">Session:</th>
+                        <td>{{ item.session }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-end">Activity Type:</th>
+                        <td>{{ item.activity_type }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-end">Activity Cost:</th>
+                        <td>{{ item.activity_cost }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-end">Created At:</th>
+                        <td>{{ item.created_at }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-end">Updated At:</th>
+                        <td>{{ item.updated_at }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-end">Number of Sessions:</th>
+                        <td>{{ item.no_of_sessions }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-3 text-end">
+                <a href="{% url 'courses:activity_update' pk=item.pk %}" class="btn btn-warning btn-sm">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'courses:activity_delete' pk=item.pk %}" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+                <a href="{% url 'courses:activity_list' %}" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

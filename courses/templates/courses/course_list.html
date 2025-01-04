@@ -1,61 +1,69 @@
 {% extends 'base_list.html' %}
 {% block content %}
-<a href="{% url 'courses:course_create' %}" class="btn btn-sm btn-success mb-3">Add New</a>
-<h1>{{ model|capfirst }} List</h1>
-<table class='table'>
-  <thead>
-    <tr>
-      <th>id</th>
-      <th>course_name</th>
-      <th>course_code</th>
-      <th>entry_qualification</th>
-      <th>medium</th>
-      <th>course_duration_months</th>
-      <th>delivery_mode</th>
-      <th>course_mode</th>
-      <th>curriculum_availability</th>
-      <th>no_of_batches_per_year</th>
-      <th>max_students_per_batch</th>
-      <th>course_fee</th>
-      <th>course_cost</th>
-      <th>is_active</th>
-      <th>created_at</th>
-      <th>updated_at</th>
-      <th>theory_hrs</th>
-      <th>practical_hrs</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in items %}
-    <tr>
-      <td>{{ item.id }}</td>
-      <td>{{ item.course_name }}</td>
-      <td>{{ item.course_code }}</td>
-      <td>{{ item.entry_qualification }}</td>
-      <td>{{ item.medium }}</td>
-      <td>{{ item.course_duration_months }}</td>
-      <td>{{ item.delivery_mode }}</td>
-      <td>{{ item.course_mode }}</td>
-      <td>{{ item.curriculum_availability }}</td>
-      <td>{{ item.no_of_batches_per_year }}</td>
-      <td>{{ item.max_students_per_batch }}</td>
-      <td>{{ item.course_fee }}</td>
-      <td>{{ item.course_cost }}</td>
-      <td>{{ item.is_active }}</td>
-      <td>{{ item.created_at }}</td>
-      <td>{{ item.updated_at }}</td>
-      <td>{{ item.theory_hrs }}</td>
-      <td>{{ item.practical_hrs }}</td>
-      <td>
-        <a href="{% url 'courses:course_detail' pk=item.pk %}">View</a>
-        <a href="{% url 'courses:course_update' pk=item.pk %}">Edit</a>
-        <a href="{% url 'courses:course_delete' pk=item.pk %}">Delete</a>
-      </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan='{{ column_count }}'>No { model|lower } found.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Course List</h5>
+            <a href="{% url 'courses:course_create' %}" class="btn btn-sm btn-primary">
+                <i class="bi bi-plus-circle"></i> Add New
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Code</th>
+                            <th>Duration</th>
+                            <th>Max. Std.</th>
+                            <th>Fees</th>
+                            <th>Active</th>
+                            <th>Theory</th>
+                            <th>Practical</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.course_code }}</td>
+                            <td>{{ item.course_duration_months }}</td>
+                            <td>{{ item.max_students_per_batch }}</td>
+                            <td>{{ item.course_fee }}</td>
+                            <td>
+                                {% if item.is_active %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-danger">No</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.theory_hrs }}</td>
+                            <td>{{ item.practical_hrs }}</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Course Actions">
+                                    <a href="{% url 'courses:course_detail' pk=item.pk %}" class="btn btn-sm btn-info text-white" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'courses:course_update' pk=item.pk %}" class="btn btn-sm btn-warning text-white" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'courses:course_delete' pk=item.pk %}" class="btn btn-sm btn-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="10" class="text-center">No {{ model|lower }} found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

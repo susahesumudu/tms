@@ -44,7 +44,9 @@ INSTALLED_APPS = [
 'center.apps.CenterConfig',
 'enrollments.apps.EnrollmentsConfig',
 'schedules.apps.SchedulesConfig',
-'predictions.apps.PredictionsConfig'
+'predictions.apps.PredictionsConfig',
+    'crispy_forms',
+        'crispy_bootstrap5',  # For Bootstrap 5
 ]
 
 MIDDLEWARE = [
@@ -146,3 +148,19 @@ MEDIA_URL = '/media/'
 
 # Path where uploaded media files will be stored
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sumuduworks@gmail.com'
+EMAIL_HOST_PASSWORD = 'jpunohrrihyvptwp'  # For security, use environment variables or Django's secret management.
+DEFAULT_FROM_EMAIL = 'sumuduworks@gmail.com'
+EMAIL_USE_TLS = True
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'  # or 'bootstrap5', depending on your needs
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+

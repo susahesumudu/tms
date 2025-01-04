@@ -3,7 +3,8 @@ from django.views.generic import TemplateView
 from django.shortcuts import redirect
 from django.http import HttpResponseForbidden
 from accounts.models import StudentProfile,TeacherProfile
-
+from courses.models import Activity
+from activities.models import *
 
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
@@ -22,14 +23,16 @@ class DashboardRedirectView(LoginRequiredMixin, TemplateView):
         return redirect('default_dashboard')  # Fallback
 
 
-
+ 
 
 class TeacherDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/teacher_dashboard.html'
+    login_url = 'login'  # Redirect to login if not authenticated
 
 
 class StudentDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/student_dashboard.html'
+    login_url = 'login'  # Redirect to login if not authenticated
   
 class StaffDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/staff_dashboard.html'
