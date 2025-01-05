@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Exercise Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Exercise Details Section -->
+    <div class="accordion" id="exerciseAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingDetails">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">
+                    Exercise Details
+                </button>
+            </h2>
+            <div id="collapseDetails" class="accordion-collapse collapse show" aria-labelledby="headingDetails" data-bs-parent="#exerciseAccordion">
+                <div class="accordion-body">
+                    <h2 class="h5">Exercise</h2>
+                    <p><strong>Title:</strong> {{ exercise.title }}</p>
+                    <p><strong>Description:</strong> {{ exercise.description }}</p>
+                    <p><strong>Difficulty:</strong> 
+                        <span class="badge 
+                            {% if exercise.get_difficulty_level_display == 'Easy' %}bg-success
+                            {% elif exercise.get_difficulty_level_display == 'Medium' %}bg-warning
+                            {% elif exercise.get_difficulty_level_display == 'Hard' %}bg-danger
+                            {% endif %}">
+                            {{ exercise.get_difficulty_level_display }}
+                        </span>
+                    </p>
+                    <p><strong>Maximum Score:</strong> {{ exercise.max_score }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Questions Section -->
+    <div class="card shadow mt-4 mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="h5 mb-0">Questions</h2>
+            <!-- Add Question Button -->
+            <a href="{% url 'activities:exercise_new_quesions' exercise.id %}" class="btn btn-sm btn-success">Add Question</a>
+        </div>
+        <div class="card-body">
+            <div class="accordion" id="accordionQuestions">
+                {% if questions %}
+                    <ul class="list-group">
+                        {% for question in questions %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Question {{ forloop.counter }}:</strong> {{ question.text }}
+                                    <br>
+                                    <strong>Weighting:</strong> {{ question.weighting }}
+                                    {% if question.tutorial_url %}
+                                        <br><a href="{{ question.tutorial_url }}" target="_blank">Tutorial</a>
+                                    {% endif %}
+                                    {% if question.video_url %}
+                                        <br><a href="{{ question.video_url }}" target="_blank">Video</a>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <!-- Edit Question Button -->
+                                    <a href="{% url 'activities:question_update' question.id %}" class="btn btn-sm btn-warning me-2"><i class="bi bi-pencil"></i></a>
+                                    <!-- Delete Question Button -->
+                                    <a href="{% url 'activities:question_delete' question.id %}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">No questions available for this exercise.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center mt-4">
+        <a href="{% url 'activities:exercise_list' %}" class="btn btn-secondary">Back to Exercise List</a>
+    </div>
+</div>
+{% endblock %}

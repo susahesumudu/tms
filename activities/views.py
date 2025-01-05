@@ -184,3 +184,98 @@ class SubmitExerciseView(FormView):
         submission.student = student
         submission.save()
         return redirect('activities:exercise_custom_detail', pk=exercise.id)
+
+
+from courses.models import Activity
+
+from django.http import Http404
+
+from django.shortcuts import get_object_or_404
+
+from .models import  Exercise
+
+class ActivityExerciseListView(LoginRequiredMixin, ListView):
+    model = Exercise
+    template_name = 'activities/activity_exercises_list.html'  # Ensure this path is correct
+    context_object_name = 'exercises'
+
+    def get_queryset(self):
+        activity_id = self.kwargs.get('activity_id')  # Pass activity_id in the URL if needed
+        
+        return Exercise.objects.filter(activity_id=activity_id)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Pass the activity object for the header or additional details
+        context['activity'] = get_object_or_404(Activity, pk=self.kwargs.get('pk'))
+        context['column_count'] = 10  # Update based on your table's column count
+        print("Context Data:", context)  # Debugging: Print context data
+        return context
+
+
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import DetailView
+from .models import Exercise, Skill, Submission, Activity
+
+class ActivityExerciseDetailView(LoginRequiredMixin, DetailView):
+    model = Exercise
+    template_name = 'activities/activity_exercises_detail.html'
+    context_object_name = 'exercise'
+
+    def get_object(self):
+        """Fetch Exercise based on exid."""
+        exid = self.kwargs.get('exid')
+        print(f"Fetching Exercise for exid={exid}")  # Debugging
+        return get_object_or_404(Exercise, id=exid)
+
+    def get_context_data(self, **kwargs):
+        """Add questions and other relevant context to the template."""
+        context = super().get_context_data(**kwargs)
+        exercise = self.object
+
+        # Fetch all questions for the exercise and prefetch related skills
+        questions = exercise.questions.prefetch_related('skill')
+
+        # Collect skill IDs from all questions
+        skill_ids = set(
+            skill.id for question in questions for skill in question.skill.all()
+        )
+
+        # Add data to context
+        context['questions'] = questions
+        context['skills'] = Skill.objects.filter(id__in=skill_ids).distinct()
+        context['submissions'] = Submission.objects.filter(exercise=exercise, student=self.request.user)
+
+        return context
+
+
+from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import CreateView
+from .models import Question, Exercise
+
+class ActivityExerciseAddQuestion(LoginRequiredMixin, CreateView):
+    model = Question
+    template_name = 'activities/execise_question_add.html'
+    fields = ['text', 'weighting', 'tutorial_url', 'video_url', 'skill']  # Fields to display in the form
+
+    def form_valid(self, form):
+        # Associate the question with the exercise based on the URL parameter
+        exid = self.kwargs['exid']
+        exercise = get_object_or_404(Exercise, id=exid)
+        form.instance.exercise = exercise
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        # Add the exercise to the context for display in the template
+        context = super().get_context_data(**kwargs)
+        exid = self.kwargs['exid']
+        context['exercise'] = get_object_or_404(Exercise, id=exid)
+        return context
+
+    def get_success_url(self):
+        # Redirect to the exercise details page after adding a question
+        return reverse_lazy('activities:exercise_detail_questions', kwargs={'exid': self.kwargs['exid']})

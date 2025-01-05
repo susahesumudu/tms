@@ -27,11 +27,17 @@ class BaseProfile(models.Model):
 
 
 class StudentProfile(BaseProfile):
-    """Fields specific to students."""
-    final_grade = models.CharField(max_length=50, blank=True, null=True)
+    """Fields specific to students, including profile and performance tracking."""
+    # Profile Details
+    final_grade = models.CharField(max_length=50, blank=True, null=True)  # Final grade of the student
     certificate_no = models.CharField(max_length=100, blank=True, null=True)
     is_certificate_issued = models.BooleanField(default=False)
     is_payment_completed = models.BooleanField(default=False)
+    linkedin = models.URLField(blank=True, null=True)
+    github = models.URLField(blank=True, null=True)
+    twitter = models.URLField(blank=True, null=True)
+
+    # Academic and Task Details
     final_marks = models.PositiveIntegerField(blank=True, null=True)
     module_marks = models.PositiveIntegerField(blank=True, null=True)
     task_marks = models.PositiveIntegerField(blank=True, null=True)
@@ -39,10 +45,25 @@ class StudentProfile(BaseProfile):
     completed_total_task = models.PositiveIntegerField(blank=True, null=True)
     completed_total_activity = models.PositiveIntegerField(blank=True, null=True)
     is_completed_total_tasks = models.BooleanField(default=False)
+
+    # Performance Metrics
+    daily_marks = models.FloatField(default=0.0)
+    weekly_marks = models.FloatField(default=0.0)
+    monthly_marks = models.FloatField(default=0.0)
+    course_wise_marks = models.FloatField(default=0.0)
+    final_assessment_score = models.FloatField(blank=True, null=True)
+    tasks_completed = models.PositiveIntegerField(default=0)
+    exercises_completed = models.PositiveIntegerField(default=0)
+    on_time_completion = models.BooleanField(default=False)
+    practical_hours = models.FloatField(default=0.0)
+    theory_hours = models.FloatField(default=0.0)
+    num_of_prev_attempts = models.PositiveIntegerField(default=0)
     industry_experience = models.PositiveIntegerField(blank=True, null=True)
-    linkedin = models.URLField(blank=True, null=True)
-    github = models.URLField(blank=True, null=True)
-    twitter = models.URLField(blank=True, null=True)
+    industry_training_experience = models.FloatField(default=0.0)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
 
 
 class TeacherProfile(BaseProfile):

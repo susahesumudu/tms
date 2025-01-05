@@ -1,85 +1,187 @@
 {% extends 'base.html' %}
-{% load static %} <!-- Ensure static tag is loaded for default avatar -->
+{% load static %}
 
 {% block title %}
 {{ user.username }}'s Profile
 {% endblock %}
 
+
+
 {% block header %}
-<h1>{{ user.username }}'s Profile</h1>
-{% if profile_edit_url %}
-    <a href="{{ profile_edit_url }}" class="btn btn-primary">Edit Profile</a>
-{% else %}
-    <p>Edit profile option is unavailable.</p>
-{% endif %}
+<div class="text-center my-4">
+    <h1>{{ user.username }}'s Profile</h1>
+    {% if profile.avatar %}
+                            <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle shadow-lg mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'default-avatar.png' %}" alt="Default Avatar" class="rounded-circle shadow-lg mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% endif %}
+    {% if profile_edit_url %}
+        <a href="{{ profile_edit_url }}" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
+    {% else %}
+        <p class="text-muted">Edit profile option is unavailable.</p>
+    {% endif %}
+</div>
 {% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     {% if profile %}
-    <div class="card text-center ">
-  <div class="card-header ">
-    <ul class="nav nav-pills card-header-pills  ">
-      <li class="nav-item ">
-        <a class="nav-link active " aria-current="true" href="#">Active</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link " href="#">Link</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link " aria-disabled="true">Disabled</a>
-      </li>
-    </ul>
-  </div>
-  <div class="card-body">
-   <div class="row">
-            <!-- First Column (Profile Info) -->
-            <div class="col-md-4">
-                <div class="card">
-                    {% if profile.avatar %}
-                        <img src="{{ profile.avatar.url }}" alt="Avatar" style="width: 150px; height: 150px; border-radius: 50%;" class="card-img-top">
-                    {% else %}
-                        <img src="{% static 'default-avatar.png' %}" alt="Default Avatar" style="width: 150px; height: 150px; border-radius: 50%;" class="card-img-top">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">Profile Info</h5>
-                        <p><strong>Bio:</strong> {{ profile.bio|default:"No bio available" }}</p>
-                        <p><strong>Location:</strong> {{ profile.address|default:"No address available" }}</p>
-                        <p><strong>Phone:</strong> {{ profile.phone_number|default:"No phone number provided" }}</p>
-                        <p><strong>Gender:</strong> {{ profile.get_gender_display|default:"Not specified" }}</p>
-                        <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F j, Y" }}</p>
-                    </div>
-                </div>
-            </div>
+    <div class="card shadow">
+        <!-- Profile Header -->
+        <div class="card-header bg-primary text-white text-center">
+            <h4>Profile Overview</h4>
+        </div>
 
-            <!-- Second Column (Additional Details) -->
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Additional Details</h5>
-                        <p><strong>Work Experience:</strong></p>
-                        <ul>
-                            <li>Front End Developer, W3Schools (Jan 2015 - Current)</li>
-                            <li>Web Developer, Something.com (Mar 2012 - Dec 2014)</li>
-                            <li>Graphic Designer, DesignSomething.com (Jun 2010 - Mar 2012)</li>
-                        </ul>
-                        <p><strong>Skills:</strong></p>
-                        <ul>
-                            <li>Adobe Photoshop - 90%</li>
-                            <li>Photography - 80%</li>
-                            <li>Illustrator - 75%</li>
-                            <li>Media - 50%</li>
-                        </ul>
+        <div class="card-body">
+            <!-- Accordion -->
+            <div class="accordion" id="profileAccordion">
+
+                <!-- Profile Info -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingProfileInfo">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfileInfo" aria-expanded="true" aria-controls="collapseProfileInfo">
+                            Profile Info
+                        </button>
+                    </h2>
+                    <div id="collapseProfileInfo" class="accordion-collapse collapse show" aria-labelledby="headingProfileInfo" data-bs-parent="#profileAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><strong>Bio:</strong> {{ profile.bio|default:"No bio available" }}</li>
+                                <li class="list-group-item"><strong>Location:</strong> {{ profile.address|default:"No address available" }}</li>
+                                <li class="list-group-item"><strong>Phone:</strong> {{ profile.phone_number|default:"No phone number provided" }}</li>
+                                <li class="list-group-item"><strong>Gender:</strong> {{ profile.get_gender_display|default:"Not specified" }}</li>
+                                <li class="list-group-item"><strong>Date of Birth:</strong> {{ profile.date_of_birth|date:"F j, Y" }}</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Certification Details -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingCertification">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCertification" aria-expanded="false" aria-controls="collapseCertification">
+                            Certification Details
+                        </button>
+                    </h2>
+                    <div id="collapseCertification" class="accordion-collapse collapse" aria-labelledby="headingCertification" data-bs-parent="#profileAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><strong>Final Grade:</strong> {{ profile.final_grade|default:"Not available" }}</li>
+                                <li class="list-group-item"><strong>Certificate Number:</strong> {{ profile.certificate_no|default:"Not issued yet" }}</li>
+                                <li class="list-group-item"><strong>Certificate Issued:</strong> {{ profile.is_certificate_issued|yesno:"Yes,No" }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Details -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingPayment">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePayment" aria-expanded="false" aria-controls="collapsePayment">
+                            Payment Details
+                        </button>
+                    </h2>
+                    <div id="collapsePayment" class="accordion-collapse collapse" aria-labelledby="headingPayment" data-bs-parent="#profileAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><strong>Payment Completed:</strong> {{ profile.is_payment_completed|yesno:"Yes,No" }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Details -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingAcademic">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAcademic" aria-expanded="false" aria-controls="collapseAcademic">
+                            Academic Details
+                        </button>
+                    </h2>
+                    <div id="collapseAcademic" class="accordion-collapse collapse" aria-labelledby="headingAcademic" data-bs-parent="#profileAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><strong>Final Marks:</strong> {{ profile.final_marks|default:"Not available" }}</li>
+                                <li class="list-group-item"><strong>Module Marks:</strong> {{ profile.module_marks|default:"Not available" }}</li>
+                                <li class="list-group-item"><strong>Task Marks:</strong> {{ profile.task_marks|default:"Not available" }}</li>
+                                <li class="list-group-item"><strong>Modules Completed:</strong> {{ profile.completed_total_mod|default:"0" }}</li>
+                                <li class="list-group-item"><strong>Tasks Completed:</strong> {{ profile.completed_total_task|default:"0" }}</li>
+                                <li class="list-group-item"><strong>Activities Completed:</strong> {{ profile.completed_total_activity|default:"0" }}</li>
+                                <li class="list-group-item"><strong>Total Industry Experience:</strong> {{ profile.industry_experience|default:"0" }} hours</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingPerformance">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePerformance" aria-expanded="false" aria-controls="collapsePerformance">
+                            Performance Metrics
+                        </button>
+                    </h2>
+                    <div id="collapsePerformance" class="accordion-collapse collapse" aria-labelledby="headingPerformance" data-bs-parent="#profileAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><strong>Daily Marks:</strong> {{ profile.daily_marks|default:"0.0" }}</li>
+                                <li class="list-group-item"><strong>Weekly Marks:</strong> {{ profile.weekly_marks|default:"0.0" }}</li>
+                                <li class="list-group-item"><strong>Monthly Marks:</strong> {{ profile.monthly_marks|default:"0.0" }}</li>
+                                <li class="list-group-item"><strong>Course-Wise Marks:</strong> {{ profile.course_wise_marks|default:"0.0" }}</li>
+                                <li class="list-group-item"><strong>Practical Hours:</strong> {{ profile.practical_hours|default:"0.0" }}</li>
+                                <li class="list-group-item"><strong>Theory Hours:</strong> {{ profile.theory_hours|default:"0.0" }}</li>
+                                <li class="list-group-item"><strong>Number of Previous Attempts:</strong> {{ profile.num_of_prev_attempts|default:"0" }}</li>
+                                <li class="list-group-item"><strong>Industry Training Experience:</strong> {{ profile.industry_training_experience|default:"0.0" }} hours</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Experience -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingWorkExperience">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWorkExperience" aria-expanded="false" aria-controls="collapseWorkExperience">
+                            Work Experience
+                        </button>
+                    </h2>
+                    <div id="collapseWorkExperience" class="accordion-collapse collapse" aria-labelledby="headingWorkExperience" data-bs-parent="#profileAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                {% for job in profile.work_experience %}
+                                    <li class="list-group-item">{{ job.title }}, {{ job.company }} ({{ job.duration }})</li>
+                                {% empty %}
+                                    <li class="list-group-item">No work experience available.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingSkills">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSkills" aria-expanded="false" aria-controls="collapseSkills">
+                            Skills
+                        </button>
+                    </h2>
+                    <div id="collapseSkills" class="accordion-collapse collapse" aria-labelledby="headingSkills" data-bs-parent="#profileAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                {% for skill, proficiency in profile.skills.items %}
+                                    <li class="list-group-item">{{ skill }} - {{ proficiency }}</li>
+                                {% empty %}
+                                    <li class="list-group-item">No skills available.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
+    </div>
     {% else %}
-        <p>No profile found for this user.</p>
+    <div class="alert alert-warning text-center">
+        <strong>Oops!</strong> No profile found for this user.
+    </div>
     {% endif %}
 </div>
-    <a href="#" class="btn btn-primary">Go somewhere</a>
-  </div>
-</div>
-        
 {% endblock %}

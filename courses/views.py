@@ -86,3 +86,6 @@ class BaseDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy(f"{self.kwargs['app_name']}:{self.kwargs['model'].lower()}_list")
+
+
+
