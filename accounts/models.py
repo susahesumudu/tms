@@ -88,9 +88,12 @@ class ParentProfile(BaseProfile):
         blank=True
     )
 
-
+from courses.models import Activity
+from activities.models import Exercise
 
 class ClickLog(models.Model):
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, null=True, blank=True, related_name='click_log_activity')
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, null=True, blank=True, related_name='click_log_exercise')
     url = models.URLField()  # URL of the page where the click occurred
     element_id = models.CharField(max_length=255, null=True, blank=True)  # ID of the clicked element
     element_tag = models.CharField(max_length=50, null=True, blank=True)  # HTML tag of the clicked element
@@ -101,3 +104,9 @@ class ClickLog(models.Model):
 
     def __str__(self):
         return f"Click on {self.element_id or self.element_tag} at {self.timestamp}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['timestamp']),
+            models.Index(fields=['activity']),
+        ]

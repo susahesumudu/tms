@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-
+from django.utils.text import slugify
 class Course(models.Model):
    
     
@@ -23,7 +23,7 @@ class Course(models.Model):
     
     # Fields
     course_name = models.CharField(max_length=200, unique=True)  # Course Title
-    course_code = models.CharField(max_length=50, unique=True)  # Course Code
+    course_code = models.CharField(max_length=50, unique=True, blank=True)  # Course Code
     entry_qualification = models.CharField(max_length=200)  # Entry Qualification
     medium = models.CharField(max_length=100 ,choices=COURSE_MEDIAUM_CHOICES)  # Medium
     course_duration_months =models.PositiveIntegerField()  # Course Duration in months
@@ -38,43 +38,57 @@ class Course(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     theory_hrs = models.PositiveIntegerField() 
-    practical_hrs = models.PositiveIntegerField() 
+    practical_hrs = models.PositiveIntegerField()
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
         return self.course_name
 
-    
+    def save(self, *args, **kwargs):
+        if not self.slug:  # Automatically create a slug if not set
+            self.slug = slugify(self.course_code)
+        super().save(*args, **kwargs)    
 
 
 class Module(models.Model):
     course = models.ForeignKey(Course, related_name='modules', on_delete=models.CASCADE)
     module_name = models.CharField(max_length=200)
-    module_code = models.CharField(max_length=200)
+    module_code = models.CharField(max_length=200,unique=True)
     theory_hours = models.PositiveIntegerField()
     practical_hours = models.PositiveIntegerField()
     module_cost = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     module_duration_weeks =models.PositiveIntegerField()  # Course Duration in months
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
+
     def __str__(self):
         return self.module_name
    
-        
+    def save(self, *args, **kwargs):
+        if not self.slug:  # Automatically create a slug if not set
+            self.slug = slugify(self.module_code)
+        super().save(*args, **kwargs)          
 
 class Task(models.Model):
     module = models.ForeignKey(Module, related_name='tasks', on_delete=models.CASCADE)
     task_name = models.CharField(max_length=200)
-    task_code = models.CharField(max_length=10)
+    task_code = models.CharField(max_length=10,unique=True)
     theory_hours = models.PositiveIntegerField()
     practical_hours = models.PositiveIntegerField()
     task_cost = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)  # Automatically set when the instance is created
     updated_at = models.DateTimeField(auto_now=True)      # Automatically updated when the instance is saved
     task_duration_days =models.PositiveIntegerField()  # Course Duration in months
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
+   
     def __str__(self):
         return (self.task_name)
 
-
+    def save(self, *args, **kwargs):
+        if not self.slug:  # Automatically create a slug if not set
+            self.slug = slugify(self.task_code)
+        super().save(*args, **kwargs)    
 
 
 class Session(models.Model):
@@ -88,6 +102,7 @@ class Session(models.Model):
     session_minutes = models.PositiveIntegerField(verbose_name="Session Duration (Minutes)")
     session_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Session Cost",  null=True, 
         blank=True)
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
         return f"{self.session_code}"
@@ -95,6 +110,11 @@ class Session(models.Model):
     def clean(self):
         if self.session_cost < 0:
             raise ValidationError("Activity cost cannot be negative.")
+
+    def save(self, *args, **kwargs):
+        if not self.slug:  # Automatically create a slug if not set
+            self.slug = slugify(self.session_code)
+        super().save(*args, **kwargs)    
 
 
 class Activity(models.Model):
@@ -120,9 +140,14 @@ class Activity(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     no_of_sessions = models.PositiveIntegerField(default=1, verbose_name="Number of Sessions")
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
         return f"{self.activity_code} - {self.activity_name}"
 
+    def save(self, *args, **kwargs):
+        if not self.slug:  # Automatically create a slug if not set
+            self.slug = slugify(self.activity_code)
+        super().save(*args, **kwargs)    
 
 

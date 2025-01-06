@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     loadCharts();
 });
-
 document.body.addEventListener("click", function (event) {
     const clickedElement = event.target;
     const elementId = clickedElement.id || null;
@@ -73,4 +72,3 @@ document.body.addEventListener("click", function (event) {
     .then((data) => console.log('Success:', data))
     .catch((error) => console.error('Error:', error));
 });
-

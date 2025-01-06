@@ -196,22 +196,23 @@ from .models import  Exercise
 
 class ActivityExerciseListView(LoginRequiredMixin, ListView):
     model = Exercise
-    template_name = 'activities/activity_exercises_list.html'  # Ensure this path is correct
+    template_name = 'activities/activity_exercises_list.html'
     context_object_name = 'exercises'
 
     def get_queryset(self):
-        activity_id = self.kwargs.get('activity_id')  # Pass activity_id in the URL if needed
-        
-        return Exercise.objects.filter(activity_id=activity_id)
-
+        # Get the activity using the slug
+        activity = get_object_or_404(Activity, pk=self.kwargs['pk'])
+        return Exercise.objects.filter(activity=activity)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Pass the activity object for the header or additional details
-        context['activity'] = get_object_or_404(Activity, pk=self.kwargs.get('pk'))
-        context['column_count'] = 10  # Update based on your table's column count
+        # Include activity details in the context
+        context['activity'] = get_object_or_404(Activity,pk=self.kwargs['pk'])
+        context['column_count'] = 10  # Adjust based on your table's column count
         print("Context Data:", context)  # Debugging: Print context data
         return context
+
+
 
 
 from django.shortcuts import get_object_or_404

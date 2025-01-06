@@ -137,16 +137,23 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
 
 
 import json
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import ClickLog
 import logging
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import ClickLog, Activity, Exercise
 
 logger = logging.getLogger(__name__)
 
-@csrf_exempt  # For development only; replace with proper CSRF handling in production
-def capture_click(request):
+def get_client_ip(request):
+    """Utility to extract the client's IP address."""
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
+def capture_click(request):
     if request.method == "POST":
         try:
             # Parse and log incoming JSON payload
@@ -168,12 +175,28 @@ def capture_click(request):
                     status=400
                 )
 
+            # Extract activity or exercise from the URL
+            activity = None
+            exercise = None
+            if 'activity' in url:
+                activity_id = extract_id_from_url(url, "activity")
+                print(activity_id)
+                if activity_id:
+                    activity = get_object_or_404(Activity, id=activity_id)
+
+            if 'exercise' in url:
+                exercise_id = extract_id_from_url(url, "exercise")
+                if exercise_id:
+                    exercise = get_object_or_404(Exercise, id=exercise_id)
+
             # Save the click log to the database
             ClickLog.objects.create(
                 url=url,
                 element_id=element_id,  # Can be null
                 element_tag=element_tag,
                 user=request.user if request.user.is_authenticated else None,
+                activity=activity,
+                exercise=exercise,
                 ip_address=ip_address,
                 user_agent=user_agent
             )
@@ -192,12 +215,11 @@ def capture_click(request):
     logger.warning("Invalid request method")
     return JsonResponse({"error": "Invalid request method. Only POST is allowed."}, status=405)
 
-# Helper function to get the client's IP address
-def get_client_ip(request):
-    """Extract the IP address from the request."""
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
+def extract_id_from_url(url, type_name):
+    """Extract ID from URL for activity or exercise."""
+    import re
+    pattern = rf"{type_name}/(\d+)"
+    match = re.search(pattern, url)
+    if match:
+        return int(match.group(1))
+    return None

@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import timedelta
 from django.conf import settings
+from django.utils.text import slugify
 
 # Assuming Activity and Session models exist in courses.models
 from courses.models import Activity, Session
@@ -16,6 +17,7 @@ class GradingRubric(models.Model):
     criteria = models.CharField(max_length=255)
     description = models.TextField()
     max_points = models.FloatField()
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
         return f"{self.criteria} ({self.max_points} points)"
@@ -29,12 +31,18 @@ class Exercise(models.Model):
         HARD = 'Hard', 'Hard'
 
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='exercises')
+    exercise_code = models.CharField(max_length=50, unique=True,default='A001')  # Course Code
     title = models.CharField(max_length=255)  # Title of the exercise
     description = models.TextField()  # Detailed description
     difficulty_level = models.CharField(max_length=50, choices=DifficultyChoices.choices)
     max_score = models.PositiveIntegerField()  # Maximum achievable score
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp when created
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
+    def save(self, *args, **kwargs):
+        if not self.slug:  # Automatically create a slug if not set
+            self.slug = slugify(self.exercise_code)
+        super().save(*args, **kwargs)    
     def __str__(self):
         return self.title
     
@@ -50,6 +58,7 @@ class Exercise(models.Model):
 class Skill(models.Model):
     skill_name = models.CharField(max_length=255)  # Name of the skill
     skill_score = models.PositiveIntegerField()  # Score for the skill
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
         return f"{self.skill_name} - Score: {self.skill_score}"
@@ -62,6 +71,7 @@ class Question(models.Model):
     weighting = models.DecimalField(max_digits=5, decimal_places=2, default=1.0)  # Weight of the question
     tutorial_url = models.URLField(blank=True, null=True)  # Optional tutorial URL
     video_url = models.URLField(blank=True, null=True)  # Optional video URL
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
         return f"{self.text[:50]}... [Weight: {self.weighting}]"
@@ -70,6 +80,7 @@ class QuestionCompletion(models.Model):
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     class Meta:
         unique_together = ('student', 'question')  # Ensure a student can complete a question only once
@@ -103,6 +114,7 @@ class Submission(models.Model):
     duration = models.DurationField(null=True, blank=True)  # Total duration
     exercise_is_completed = models.BooleanField(default=False)  # Completion status
     is_ontime_completed = models.BooleanField(default=False)  # On-time submission status
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def start(self):
         self.start_time = now()
@@ -143,6 +155,7 @@ class Quiz(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
     max_score = models.IntegerField(default=0, verbose_name="Total Score")
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
         return self.title
@@ -152,6 +165,7 @@ class QuizQuestion(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="questions")
     text = models.TextField(verbose_name="Question Text")
     weight = models.FloatField(default=1.0, verbose_name="Weight (%)")
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
         return self.text
@@ -161,6 +175,7 @@ class Choice(models.Model):
     question = models.ForeignKey(QuizQuestion, on_delete=models.CASCADE, related_name='choices')
     text = models.CharField(max_length=255, verbose_name="Choice Text")
     is_correct = models.BooleanField(default=False, verbose_name="Correct Answer")
+    slug = models.SlugField(max_length=200, unique=False, blank=True) 
 
     def __str__(self):
         return self.text
@@ -179,6 +194,7 @@ class QuizSubmission(models.Model):
     duration = models.DurationField(null=True, blank=True)
     quiz_is_completed = models.BooleanField(default=False)
     is_ontime_completed = models.BooleanField(default=False)
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def stop(self):
         if self.start_time:
@@ -220,6 +236,7 @@ class MarksTracker(models.Model):
     theory_hours = models.FloatField()
     num_of_prev_attempts = models.IntegerField()
     industry_training_experience = models.FloatField()
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
         # Use 'username', 'first_name', or 'last_name' instead of 'name'
@@ -233,6 +250,7 @@ class StudentActivityLog(models.Model):
     id_site = models.IntegerField()  # Resource identifier
     date = models.IntegerField()  # Day number relative to module start
     sum_click = models.IntegerField()  # Total clicks on a resource for the day
+    slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
         return f"{self.activity_code} - {self.code_presentation} - {self.id_student}"
