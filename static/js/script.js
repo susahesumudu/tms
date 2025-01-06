@@ -44,3 +44,33 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     loadCharts();
 });
+
+document.body.addEventListener("click", function (event) {
+    const clickedElement = event.target;
+    const elementId = clickedElement.id || null;
+    const elementTag = clickedElement.tagName;
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch('/accounts/capture-click/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({
+            url: window.location.href,
+            element_id: elementId,
+            element_tag: elementTag,
+        }),
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then((data) => console.log('Success:', data))
+    .catch((error) => console.error('Error:', error));
+});
+

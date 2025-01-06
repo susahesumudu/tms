@@ -5,6 +5,7 @@ from django.http import HttpResponseForbidden
 from accounts.models import StudentProfile,TeacherProfile
 from courses.models import Activity
 from activities.models import *
+from accounts.models import StudentProfile
 
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
@@ -33,7 +34,16 @@ class TeacherDashboardView(LoginRequiredMixin, TemplateView):
 class StudentDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/student_dashboard.html'
     login_url = 'login'  # Redirect to login if not authenticated
-  
+    # def get_context_data(self, **kwargs):
+    #         context = super().get_context_data(**kwargs)
+    #         activities = Activity.objects.filter(student=self.request.user)
+    #         marks_tracker, created = MarksTracker.objects.get_or_create(student=self.request.user)
+
+    #         context['activities'] = activities
+    #         context['marks_tracker'] = marks_tracker
+    #         return context  
+
+
 class StaffDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/staff_dashboard.html'
 
@@ -41,3 +51,4 @@ class StaffDashboardView(LoginRequiredMixin, TemplateView):
 class ParentDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/parent_dashboard.html'
   
+

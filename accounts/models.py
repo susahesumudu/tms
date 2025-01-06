@@ -87,3 +87,17 @@ class ParentProfile(BaseProfile):
         limit_choices_to={'groups__name': 'Student'},
         blank=True
     )
+
+
+
+class ClickLog(models.Model):
+    url = models.URLField()  # URL of the page where the click occurred
+    element_id = models.CharField(max_length=255, null=True, blank=True)  # ID of the clicked element
+    element_tag = models.CharField(max_length=50, null=True, blank=True)  # HTML tag of the clicked element
+    user = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True, blank=True)  # Logged-in user
+    timestamp = models.DateTimeField(auto_now_add=True)  # Time of the click
+    ip_address = models.GenericIPAddressField(null=True, blank=True)  # User's IP address
+    user_agent = models.TextField(null=True, blank=True)  # Browser info for analytics
+
+    def __str__(self):
+        return f"Click on {self.element_id or self.element_tag} at {self.timestamp}"

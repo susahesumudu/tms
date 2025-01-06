@@ -164,3 +164,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'  # or 'bootstrap5', depending on your needs
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 
+INSTALLED_APPS += ['corsheaders']
+
+MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
+
+CORS_ALLOW_ALL_ORIGINS = True  # For development; restrict in production

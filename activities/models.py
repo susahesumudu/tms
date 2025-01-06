@@ -224,3 +224,20 @@ class MarksTracker(models.Model):
     def __str__(self):
         # Use 'username', 'first_name', or 'last_name' instead of 'name'
         return f"{self.student.username}'s Marks"
+
+
+class StudentActivityLog(models.Model):
+    activity_code = models.CharField(max_length=10)  # Activity code, e.g., "ACT101"
+    exercise_code = models.CharField(max_length=20)  # Presentation instance, e.g., "2023A"
+    id_student = models.IntegerField()  # Unique student identifier
+    id_site = models.IntegerField()  # Resource identifier
+    date = models.IntegerField()  # Day number relative to module start
+    sum_click = models.IntegerField()  # Total clicks on a resource for the day
+
+    def __str__(self):
+        return f"{self.activity_code} - {self.code_presentation} - {self.id_student}"
+
+    class Meta:
+        verbose_name = "Student Activity Log"
+        verbose_name_plural = "Student Activity Logs"
+        ordering = ['activity_code', 'exercise_code', 'id_student', 'date']

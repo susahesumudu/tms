@@ -136,4 +136,68 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import ClickLog
+import logging
 
+logger = logging.getLogger(__name__)
+
+@csrf_exempt  # For development only; replace with proper CSRF handling in production
+def capture_click(request):
+
+    if request.method == "POST":
+        try:
+            # Parse and log incoming JSON payload
+            data = json.loads(request.body)
+            logger.info(f"Click data received: {data}")
+
+            # Extract data from the request
+            url = data.get('url')
+            element_id = data.get('element_id')  # Optional: Can be null
+            element_tag = data.get('element_tag')
+            ip_address = get_client_ip(request)
+            user_agent = request.META.get('HTTP_USER_AGENT', '')
+
+            # Validate required fields
+            if not url or not element_tag:
+                logger.error("Missing required fields: 'url' or 'element_tag'")
+                return JsonResponse(
+                    {"error": "Missing required fields: 'url' and 'element_tag' are mandatory."},
+                    status=400
+                )
+
+            # Save the click log to the database
+            ClickLog.objects.create(
+                url=url,
+                element_id=element_id,  # Can be null
+                element_tag=element_tag,
+                user=request.user if request.user.is_authenticated else None,
+                ip_address=ip_address,
+                user_agent=user_agent
+            )
+            logger.info("Click successfully logged.")
+            return JsonResponse({"message": "Click recorded successfully"}, status=201)
+
+        except json.JSONDecodeError:
+            logger.error("Invalid JSON payload")
+            return JsonResponse({"error": "Invalid JSON payload"}, status=400)
+
+        except Exception as e:
+            logger.error(f"Unexpected error while processing click: {e}")
+            return JsonResponse({"error": f"Unexpected error: {str(e)}"}, status=500)
+
+    # Handle invalid request methods
+    logger.warning("Invalid request method")
+    return JsonResponse({"error": "Invalid request method. Only POST is allowed."}, status=405)
+
+# Helper function to get the client's IP address
+def get_client_ip(request):
+    """Extract the IP address from the request."""
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
