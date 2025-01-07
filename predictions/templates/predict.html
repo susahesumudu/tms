@@ -1,38 +1,83 @@
 {% extends 'base_list.html' %}
 {% block content %}
-    <h1>Predict Final Grade</h1>
+<div class="container my-4">
+    <!-- Link to Predicted List -->
+    <a href="{% url 'predictions:prediction_list' %}" class="btn btn-primary mb-3">View Predicted List</a>
+    
+    <!-- Page Header -->
+    <h1 class="mb-4">Predict Final Grade</h1>
 
-    <form method="POST" action="{% url 'predict_grade' %}">
+    <!-- Prediction Form -->
+    <form method="post" class="card p-4 shadow-sm">
         {% csrf_token %}
-        <label>Assessment Score:</label>
-        <input type="number" step="0.01" name="assessment_score" required><br>
 
-        <label>Industry Training Experience:</label>
-        <input type="number" step="0.01" name="Industry_Training_Experience" required><br>
+        <!-- Student Selection -->
+        <div class="mb-3">
+            <label for="student" class="form-label">Select Student:</label>
+            <select id="student" name="student" class="form-select" required>
+                {% for student in students %}
+                <option value="{{ student.id }}">{{ student.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <label>Average Time Per Task:</label>
-        <input type="number" step="0.01" name="Average_Time_Per_Task" required><br>
+        <!-- Assessment Score -->
+        <div class="mb-3">
+            <label for="assessment_score" class="form-label">Assessment Score:</label>
+            <input type="number" step="0.01" id="assessment_score" name="assessment_score" class="form-control" required>
+        </div>
 
-        <label>Completed No Activity:</label>
-        <input type="number" step="0.01" name="Completed_No_Activity" required><br>
+        <!-- Industry Training Experience -->
+        <div class="mb-3">
+            <label for="Industry_Training_Experience" class="form-label">Industry Training Experience:</label>
+            <input type="number" step="0.01" id="Industry_Training_Experience" name="Industry_Training_Experience" class="form-control" required>
+        </div>
 
-        <label>Total Task Completed:</label>
-        <input type="number" step="0.01" name="Total_Task_Completed" required><br>
+        <!-- Average Time Per Task -->
+        <div class="mb-3">
+            <label for="Average_Time_Per_Task" class="form-label">Average Time Per Task:</label>
+            <input type="number" step="0.01" id="Average_Time_Per_Task" name="Average_Time_Per_Task" class="form-control" required>
+        </div>
 
-        <label>Self-Efficacy Score:</label>
-        <input type="number" step="0.01" name="Self_Efficacy_Score" required><br>
+        <!-- Completed No Activity -->
+        <div class="mb-3">
+            <label for="Completed_No_Activity" class="form-label">Completed No Activity:</label>
+            <input type="number" step="0.01" id="Completed_No_Activity" name="Completed_No_Activity" class="form-control" required>
+        </div>
 
-        <label>Practical Hours:</label>
-        <input type="number" step="0.01" name="Practicals_hrs" required><br>
+        <!-- Total Task Completed -->
+        <div class="mb-3">
+            <label for="Total_Task_Completed" class="form-label">Total Task Completed:</label>
+            <input type="number" step="0.01" id="Total_Task_Completed" name="Total_Task_Completed" class="form-control" required>
+        </div>
 
-        <label>Theory Hours:</label>
-        <input type="number" step="0.01" name="Theory_hrs" required><br>
+        <!-- Self Efficacy Score -->
+        <div class="mb-3">
+            <label for="Self_Efficacy_Score" class="form-label">Self Efficacy Score:</label>
+            <input type="number" step="0.01" id="Self_Efficacy_Score" name="Self_Efficacy_Score" class="form-control" required>
+        </div>
 
-        <button type="submit">Predict</button>
+        <!-- Practicals Hours -->
+        <div class="mb-3">
+            <label for="Practicals_hrs" class="form-label">Practicals Hours:</label>
+            <input type="number" step="0.01" id="Practicals_hrs" name="Practicals_hrs" class="form-control" required>
+        </div>
+
+        <!-- Theory Hours -->
+        <div class="mb-3">
+            <label for="Theory_hrs" class="form-label">Theory Hours:</label>
+            <input type="number" step="0.01" id="Theory_hrs" name="Theory_hrs" class="form-control" required>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success">Predict Grade</button>
     </form>
 
-    <!-- Display the prediction result -->
+    <!-- Display Prediction Result -->
     {% if prediction %}
+    <div class="alert alert-info mt-4">
         <h2>Prediction Result: {{ prediction }}</h2>
+    </div>
     {% endif %}
+</div>
 {% endblock %}

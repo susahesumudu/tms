@@ -1,0 +1,60 @@
+{% extends 'base_list.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">Prediction Details</h1>
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th>Student</th>
+                <td>{{ prediction.student.username }}</td>
+            </tr>
+            <tr>
+                <th>Predicted By</th>
+                <td>{{ prediction.predicted_by.username }}</td>
+            </tr>
+            <tr>
+                <th>Assessment Score</th>
+                <td>{{ prediction.assessment_score }}</td>
+            </tr>
+            <tr>
+                <th>Industry Training Experience</th>
+                <td>{{ prediction.industry_training_experience }}</td>
+            </tr>
+            <tr>
+                <th>Average Time Per Task</th>
+                <td>{{ prediction.average_time_per_task }}</td>
+            </tr>
+            <tr>
+                <th>Completed Activities</th>
+                <td>{{ prediction.completed_no_activity }}</td>
+            </tr>
+            <tr>
+                <th>Total Tasks Completed</th>
+                <td>{{ prediction.total_task_completed }}</td>
+            </tr>
+            <tr>
+                <th>Self-Efficacy Score</th>
+                <td>{{ prediction.self_efficacy_score }}</td>
+            </tr>
+            <tr>
+                <th>Practicals Hours</th>
+                <td>{{ prediction.practicals_hrs }}</td>
+            </tr>
+            <tr>
+                <th>Theory Hours</th>
+                <td>{{ prediction.theory_hrs }}</td>
+            </tr>
+            <tr>
+                <th>Predicted Grade</th>
+                <td>{{ prediction.predicted_grade }}</td>
+            </tr>
+            <tr>
+                <th>Prediction Date</th>
+                <td>{{ prediction.prediction_date }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="{% url 'predictions:prediction_list' %}" class="btn btn-secondary mt-3">Back to List</a>
+</div>
+{% endblock %}
