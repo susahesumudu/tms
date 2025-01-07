@@ -8,4 +8,5 @@ urlpatterns = [
     path('predictions/', views.PredictionListView.as_view(), name='prediction_list'),
         path('predict-row/<int:pk>/', views.PredictForRowView.as_view(), name='predict_for_row'),
 path('predictions/<slug:slug>/', views.PredictionDetailView.as_view(), name='prediction_detail'),
+    path('<int:pk>/send_email/', views.SendEmailNotificationView.as_view(), name='send_email'),
 ]

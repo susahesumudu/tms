@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Grade Submission</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>Student:</strong> {{ submission.student.username }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Exercise:</strong> {{ submission.exercise.title }}</p>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>Submitted At:</strong> {{ submission.submitted_at }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Duration:</strong> {{ submission.duration }}</p>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p><strong>On-Time Submission:</strong> 
+                        <span class="badge {% if submission.is_ontime_completed %}badge-success{% else %}badge-danger{% endif %}">
+                            {% if submission.is_ontime_completed %}Yes{% else %}No{% endif %}
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <form method="post" class="mb-3">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> Submit Grade
+                </button>
+                <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary ml-2">
+                    <i class="bi bi-arrow-left-circle"></i> Back to Dashboard
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

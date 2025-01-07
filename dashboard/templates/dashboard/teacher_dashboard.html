@@ -1,10 +1,66 @@
-
 {% extends 'base.html' %}
 
-{% block title %}Teacher  Dashboard{% endblock %}
+{% block title %}Teacher Dashboard{% endblock %}
 
 {% block header %}
-<h1>Teacher Dashboard</h1>
-<p>Welcome, {{ user.username }}. Manage your classes and students here.</p>
+<div class="container text-center my-4">
+    <h1 class="display-4">Teacher Dashboard</h1>
+    <p class="lead">Welcome, {{ user.username }}. Below are the submitted quizzes and exercises that need your attention.</p>
+</div>
+{% endblock %}
 
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Ungraded Quizzes Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Ungraded Quizzes</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for quiz in ungraded_quizzes %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Student:</strong> {{ quiz.user.username }}<br>
+                                    <strong>Quiz:</strong> {{ quiz.quiz.title }}<br>
+                                    <strong>Submitted At:</strong> {{ quiz.submitted_at }}
+                                </div>
+                                <a href="{% url 'grade_quiz' quiz.id %}" class="btn btn-sm btn-primary">Grade Now</a>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No ungraded quizzes at the moment.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ungraded Exercises Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4>Ungraded Exercises</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for exercise in ungraded_exercises %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Student:</strong> {{ exercise.student.username }}<br>
+                                    <strong>Exercise:</strong> {{ exercise.exercise.title }}<br>
+                                    <strong>Submitted At:</strong> {{ exercise.submitted_at }}
+                                </div>
+                                <a href="{% url 'activities:grade_exercise' exercise.slug %}" class="btn btn-sm btn-primary">Grade Now</a>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No ungraded exercises at the moment.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -5,6 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.conf import settings
 from django.utils.text import slugify
+from django.utils.timezone import now
 
 # Assuming Activity and Session models exist in courses.models
 from courses.models import Activity, Session
@@ -140,13 +141,24 @@ class Submission(models.Model):
 
     def __str__(self):
         exercise_title = self.exercise.title if self.exercise else "Unknown Exercise"
-        username = self.user.username if self.user else "Unknown User"
+        username = self.student.username if self.student else "Unknown User"
         return f"{username} - {exercise_title} (Completed: {self.exercise_is_completed})"
 
 
+    def mark_completed(self):
+        """Mark the submission as completed."""
+        self.exercise_is_completed = True
+        self.submitted_at = now()
+        self.save()
 
+    def save(self, *args, **kwargs):
+        if not self.slug:  # Automatically create a slug if not set
+            self.slug = slugify(self.student.username)
+        super().save(*args, **kwargs)  
 
-
+    class Meta:
+        # Ensure a unique submission per student and exercise
+        unique_together = ('student', 'exercise')
 
 
 class Quiz(models.Model):
@@ -182,7 +194,7 @@ class Choice(models.Model):
 
 
 class QuizSubmission(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     score = models.PositiveIntegerField(null=True, blank=True)
     graded_by = models.ForeignKey(
@@ -223,19 +235,19 @@ class QuizSubmission(models.Model):
 
 class MarksTracker(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
-    daily_marks = models.FloatField(default=0.0)
+    daily_marks = models.FloatField(default=0.0,)
     weekly_marks = models.FloatField(default=0.0)
     monthly_marks = models.FloatField(default=0.0)
     course_wise_marks = models.FloatField(default=0.0)
-    final_grade = models.CharField(max_length=10)
-    final_assessment_score = models.FloatField()
-    tasks_completed = models.IntegerField()
-    exercises_completed = models.IntegerField()
-    on_time_completion = models.BooleanField()
-    practical_hours = models.FloatField()
-    theory_hours = models.FloatField()
-    num_of_prev_attempts = models.IntegerField()
-    industry_training_experience = models.FloatField()
+    final_grade = models.CharField(max_length=10,blank=True)
+    final_assessment_score = models.FloatField(default=0.0)
+    tasks_completed = models.IntegerField(default=0)
+    exercises_completed = models.IntegerField(default=0.0)
+    on_time_completion = models.BooleanField(False)
+    practical_hours = models.FloatField(default=0.0)
+    theory_hours = models.FloatField(default=0.0)
+    num_of_prev_attempts = models.IntegerField(default=0.0)
+    industry_training_experience = models.FloatField(default=0.0)
     slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
@@ -259,3 +271,6 @@ class StudentActivityLog(models.Model):
         verbose_name = "Student Activity Log"
         verbose_name_plural = "Student Activity Logs"
         ordering = ['activity_code', 'exercise_code', 'id_student', 'date']
+
+
+

@@ -303,7 +303,7 @@ class ActivityAdmin(admin.ModelAdmin):
     ordering = ('id',)
     fieldsets = (
         (None, {
-            'fields': ('activity_code', 'activity_name', 'activity_type', 'task')
+            'fields': ('activity_code', 'activity_name', 'activity_type', 'task' ,'slug')
         }),
         ('Session Details', {
             'fields': ('session', 'no_of_sessions')

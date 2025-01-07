@@ -26,3 +26,28 @@ class SubmissionForm(forms.ModelForm):
     class Meta:
         model = Submission
         fields = ['submitted_file']
+
+
+from django import forms
+from .models import Submission
+
+class GradeSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = Submission
+        fields = ['score', 'feedback', 'grading_rubric']
+        widgets = {
+            'feedback': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Provide feedback...'}),
+            'score': forms.NumberInput(attrs={'min': 0, 'max': 100}),
+        }
+
+
+from django import forms
+from .models import Submission
+
+class ExerciseSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = Submission
+        fields = ['submitted_file']
+        widgets = {
+            'submitted_file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }

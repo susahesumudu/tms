@@ -1,10 +1,20 @@
-/* Center the login box on the page */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #eaeaea; /* Light ash background color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+}
+
 .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f5;
 }
 
 .login-box {
@@ -16,14 +26,12 @@
     text-align: center;
 }
 
-/* Heading for the login page */
 .login-heading {
     font-size: 24px;
     margin-bottom: 20px;
     color: #35405a;
 }
 
-/* Style for the login fields */
 .login-field {
     margin-bottom: 15px;
     text-align: left;
@@ -44,7 +52,6 @@
     border-radius: 4px;
 }
 
-/* Login button */
 .login-button {
     background-color: #0c75c9;
     color: white;
@@ -60,17 +67,31 @@
     background-color: #0a5aa5;
 }
 
-/* Footer text or message */
 .login-footer {
     margin-top: 20px;
     font-size: 12px;
     color: #888;
 }
 
-/* General Body Styling */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
+.options {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.option-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 12px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.option-link:hover {
+    background: #007bff;
+    color: #fff;
 }

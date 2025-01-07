@@ -1,9 +1,10 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 
 class Prediction(models.Model):
-    code = models.CharField(max_length=10, unique=True, default="std1")
+    code = models.CharField(max_length=10, unique=True, blank=True)  # Allow blank to auto-generate
     student = models.ForeignKey(User, related_name="student_predictions", on_delete=models.CASCADE)
     predicted_by = models.ForeignKey(User, related_name="teacher_predictions", on_delete=models.CASCADE)
     assessment_score = models.FloatField()
@@ -16,11 +17,15 @@ class Prediction(models.Model):
     theory_hrs = models.FloatField()
     predicted_grade = models.CharField(max_length=10, null=True, blank=True)
     prediction_date = models.DateTimeField(auto_now_add=True)
-    slug = models.SlugField(unique=True, max_length=100)
+    slug = models.SlugField(unique=True, max_length=100, blank=True)  # Allow blank to auto-generate
 
     def save(self, *args, **kwargs):
+        # Auto-generate unique code if not set
+        if not self.code:
+            self.code = str(uuid.uuid4())[:8]  # Shorten UUID to fit max_length=10
+        # Auto-generate slug if not set
         if not self.slug:
-            self.slug = slugify(self.student.username)
+            self.slug = slugify(self.code)
         super().save(*args, **kwargs)
 
     def __str__(self):

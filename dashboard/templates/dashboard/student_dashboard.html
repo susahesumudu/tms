@@ -1,17 +1,102 @@
-
 {% extends 'base.html' %}
 
 {% block title %}Student Dashboard{% endblock %}
 
-
 {% block header %}
-<h1>Student Dashboard</h1>
-<p>Welcome, {{ user.username }}. View your courses and progress here.</p>
-
+<div class="container text-center my-4">
+    <h1 class="display-4">Student Dashboard</h1>
+    <p class="lead">Welcome, {{ user.username }}. View your courses, progress, and notifications here.</p>
+</div>
 {% endblock %}
-
 
 {% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Notifications Section -->
+        <div class="col-md-6 mb-4">
+            <div id="notifications" class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Notifications</h4>
+                </div>
+                <div class="card-body">
+                    <ul id="notifications-list" class="list-group">
+                        <!-- Notifications will appear here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-
+        <!-- Courses and Progress Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4>Your Courses and Progress</h4>
+                </div>
+                <div class="card-body">
+                    <p>Content related to courses and progress goes here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
+
+<script>
+  // WebSocket URL (update to match your server configuration)
+  const socket = new WebSocket('ws://127.0.0.1:8000/ws/notifications/');
+
+  // When the WebSocket connection is opened
+  socket.onopen = function () {
+      console.log('WebSocket connection established');
+  };
+
+  // When a message is received
+  socket.onmessage = function (event) {
+      console.log('Message from server:', event.data);
+
+      // Parse the notification data (assuming it's JSON)
+      try {
+          const data = JSON.parse(event.data);
+
+          // Create a new notification element
+          const notificationItem = document.createElement('li');
+          notificationItem.textContent = data.message;
+          notificationItem.className = "list-group-item";
+
+          // Add the notification to the list
+          const notificationsList = document.getElementById('notifications-list');
+          notificationsList.appendChild(notificationItem);
+      } catch (error) {
+          console.error('Error parsing WebSocket message:', error);
+      }
+  };
+
+  // When the WebSocket connection is closed
+  socket.onclose = function (event) {
+      console.error('WebSocket closed unexpectedly:', event);
+  };
+
+  // When there's an error with the WebSocket
+  socket.onerror = function (error) {
+      console.error('WebSocket error:', error);
+  };
+</script>
+
+<style>
+  .card {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-header {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .list-group-item {
+      border: none;
+      padding: 10px 15px;
+  }
+
+  .list-group-item:nth-child(odd) {
+      background-color: #f8f9fa;
+  }
+</style>

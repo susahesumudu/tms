@@ -33,7 +33,15 @@ urlpatterns += [
             
              path(
                 'exercises/<slug:slug>/questions/new',
-             views.ActivityExerciseAddQuestion.as_view(), name='exercise_new_quesions'),            
+             views.ActivityExerciseAddQuestion.as_view(), name='exercise_new_quesions'),   
+
+            path(     
+                'exercises/<slug:slug>/grade',
+             views.GradeExerciseView.as_view(), name='grade_exercise'),      
+
+                        path(     
+                'exercises/<slug:slug>/submit',
+             views.SubmitExerciseView.as_view(), name='submit_exercise'),          
             
             ]
 

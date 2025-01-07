@@ -1,13 +1,20 @@
 /* Sidebar */
 #sidebar {
-    height: 100vh;
-    width: 220px; /* Full width by default */
-    background-color: #2c3e50;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 220px;
+    background-color: var(--bs-dark); /* Bootstrap theming variable */
+    color: var(--bs-light);
+    overflow-y: auto;
     transition: all 0.3s ease-in-out;
+    z-index: 1030;
+    box-shadow: 20px;
 }
 
-#sidebar.minimized {
-    width: 60px; /* Minimized width */
+#sidebar.collapsed {
+    width: 60px;
 }
 
 #sidebar h4, 
@@ -16,59 +23,89 @@
     opacity: 1;
 }
 
-#sidebar.minimized h4, 
-#sidebar.minimized span {
-    opacity: 0; /* Hide text in minimized mode */
+#sidebar.collapsed h4, 
+#sidebar.collapsed span {
+    opacity: 0;
+    pointer-events: none;
 }
 
 #sidebar .nav-link {
     font-size: 1rem;
     padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     border-radius: 4px;
+    color: var(--bs-light);
     transition: all 0.3s ease;
-    color: #ecf0f1;
 }
 
 #sidebar .nav-link i {
-    font-size: 1.25rem; /* Increase icon size */
+    font-size: 1.25rem;
 }
 
 #sidebar .nav-link:hover {
-    background-color: #34495e;
+    background-color: var(--bs-secondary);
+    color: var(--bs-light);
 }
 
 #sidebar .nav-link.active {
-    background-color: #007bff;
+    background-color: var(--bs-primary);
     font-weight: bold;
 }
 
 /* Main Content */
 #main-content {
-    margin-left: 220px; /* Full sidebar width offset */
+    margin-left: 220px;
+    padding: 20px;
     transition: margin-left 0.3s ease-in-out;
 }
 
-#sidebar.minimized + #main-content {
-    margin-left: 60px; /* Adjust offset for minimized sidebar */
+#sidebar.collapsed + #main-content {
+    margin-left: 60px;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     #sidebar {
         position: absolute;
-        left: -220px; /* Hidden by default */
+        left: -220px;
         z-index: 1050;
     }
 
     #sidebar.show {
-        left: 0; /* Show sidebar when toggled */
+        left: 0;
     }
 
     #main-content {
-        margin-left: 0; /* Take full width */
+        margin-left: 0;
     }
 
-    #sidebar.minimized + #main-content {
+    #sidebar.collapsed + #main-content {
         margin-left: 0;
     }
 }
+
+  /* Ensure the sidebar does not overlap the navbar */
+    #sidebar {
+        position: fixed;
+        top: 56px; /* Height of the navbar */
+        left: 0;
+        bottom: 0;
+        width: 220px;
+        transition: all 0.3s ease;
+    }
+
+    #sidebar .nav-link {
+        display: flex;
+        align-items: center;
+    }
+
+    #sidebar .nav-text {
+        display: inline;
+        transition: opacity 0.3s ease;
+    }
+
+    main {
+        transition: margin-left 0.3s ease;
+    }

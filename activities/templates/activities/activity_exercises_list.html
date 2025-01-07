@@ -22,8 +22,9 @@
                         
                         <th class="text-center">Difficulty Level</th>
                         <th class="text-center">Max Score</th>
-                       
-                        <th class="text-center">Actions</th>
+                        <th class="text-center">Questions</th>
+                        <th class="text-center">Assing</th>
+                           <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,12 +36,28 @@
                       
                         <td class="text-center">{{ item.difficulty_level }}</td>
                         <td class="text-center">{{ item.max_score }}</td>
-                       
+                        <td class="text-center"><div class="btn-group" role="group" aria-label="Exercise Actions">
+                                 <a href="{% url 'activities:exercise_detail_quesions' slug=item.slug %}" class="btn btn-sm btn-success text-white">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                               
+
+                            </div>
+
+                        </td>
                         <td class="text-center">
                             <div class="btn-group" role="group" aria-label="Exercise Actions">
-                                 <a href="{% url 'activities:exercise_detail_quesions' slug=item.slug %}" class="btn btn-sm btn-success text-white">
-                                    <i class="bi bi-eye"></i>Quesions
-                                </a>
+                               
+                         
+                                 <a href="{% url 'activities:exercise_delete' slug=item.slug %}" class="btn btn-sm btn-info">
+    <i class="bi bi-plus-circle"></i> 
+</a>
+
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group" aria-label="Exercise Actions">
+                               
                                 <a href="{% url 'activities:exercise_detail' slug=item.slug %}" class="btn btn-sm btn-info text-white">
                                     <i class="bi bi-eye"></i>
                                 </a>
@@ -50,6 +67,9 @@
                                 <a href="{% url 'activities:exercise_delete' slug=item.slug %}" class="btn btn-sm btn-danger">
                                     <i class="bi bi-trash"></i>
                                 </a>
+                                 
+</a>
+
                             </div>
                         </td>
                     </tr>

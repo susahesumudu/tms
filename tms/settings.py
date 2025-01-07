@@ -165,7 +165,20 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 
 INSTALLED_APPS += ['corsheaders']
+INSTALLED_APPS += [ 'channels',]
+
 
 MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
 
 CORS_ALLOW_ALL_ORIGINS = True  # For development; restrict in production
+
+ASGI_APPLICATION = 'tms.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],  # Update host and port if necessary
+        },
+    },
+}

@@ -10,12 +10,17 @@ from django.conf import settings
 import logging
 import joblib
 import os
+from asgiref.sync import async_to_sync
+from django.contrib.auth.models import User
+
+
+from channels.layers import get_channel_layer
 
 # Initialize logger
 logger = logging.getLogger(__name__)
 
 # Load the ML model
-model_path = os.path.join(os.path.dirname(__file__), 'Decision_Tree_vocational_model.pkl')
+model_path = os.path.join(os.path.dirname(__file__), 'best_random_forest_model.pkl')
 model = joblib.load(model_path)
 
 class PredictForRowView(LoginRequiredMixin, View):
@@ -41,28 +46,90 @@ class PredictForRowView(LoginRequiredMixin, View):
             prediction.predicted_grade = "Pass" if result[0] == 1 else "Fail"
             prediction.save()
 
-            # Email functionality: Notify the student of their predicted grade
-            try:
-                student_email = prediction.student.email  # Ensure student has an email field
-                send_mail(
-                    subject='Your Final Grade Prediction',
-                    message=f'Dear {prediction.student.first_name},\n\n'
-                            f'Your final grade has been predicted as: {prediction.predicted_grade}. '
-                            f'Please log in to the portal for more details.\n\n'
-                            'Best regards,\nYour School Team',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[student_email],
-                    fail_silently=False,
-                )
-                logger.info(f"Email sent successfully to student: {student_email}")
-            except Exception as email_error:
-                logger.error(f"Failed to send email to student: {student_email}. Error: {email_error}")
 
+            # Notify via WebSocket
+            # Notify WebSocket clients via Redis
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                "notifications",
+                {
+                    "type": "send_notification",
+                    "message": f"Prediction made for student {prediction.student.username}: {prediction.predicted_grade}"
+                }
+            )
+
+
+           
         except Exception as e:
             logger.error(f"Prediction failed for Prediction ID {pk}: {e}")
             return JsonResponse({'error': f"Prediction error: {e}"})
 
         # Redirect back to the predictions list
+        return redirect('predictions:prediction_list')
+
+
+class SendEmailNotificationView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        # Initialize progress
+        progress = 0
+
+        # Get the specific Prediction object
+        try:
+            prediction = get_object_or_404(Prediction, pk=pk)
+            progress = 10
+        except Exception as e:
+            logger.error(f"Error retrieving prediction with ID {pk}: {e}")
+          
+
+        # Ensure the student has an email
+        student_email = prediction.student.email
+        if not student_email:
+            progress = 50
+         
+
+        # Try sending the email
+        if prediction.predicted_grade=="Pass":
+            sub = "Congratulations on Your Academic Progress!"
+            msg = f"""Dear {prediction.student.first_name},
+
+Congratulations! Your predicted final grade is PASS. Keep up the great work and continue staying focused.
+
+For more details, please log in to the student portal.
+Best regards,
+Your School Team"""
+
+        else:
+            sub = "Important Update on Your Academic Performance"
+            msg = f"""Dear {prediction.student.first_name},
+
+Our analysis indicates that you are at risk of failing your final assessment. Don’t worry—there’s still time to improve!
+
+We recommend reviewing the feedback and improvement steps provided in your portal. Please log in promptly to take action and get back on track.
+
+Best regards,
+Your Training Team
+"""
+
+        try:
+
+
+            progress = 70
+            send_mail(
+                subject=sub,
+                message=msg,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[student_email],
+                fail_silently=False,
+            )
+            progress = 100
+            logger.info(f"Email sent successfully to student: {student_email}")
+     
+        except Exception as email_error:
+            logger.error(f"Failed to send email to student: {student_email}. Error: {email_error}")
+            progress = 80
+            
+
+        # Fallback redirect
         return redirect('predictions:prediction_list')
 
 
@@ -128,7 +195,7 @@ class PredictGradeView(LoginRequiredMixin,View):
 
         # Pass the list of students back to the template
         students = User.objects.all()
-        return render(request, self.template_name, {'prediction': prediction, 'students': students})
+        return redirect('predictions:prediction_list')
 
 
 

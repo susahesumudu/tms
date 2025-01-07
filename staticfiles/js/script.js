@@ -1,5 +1,3 @@
-// custom.js
-
 document.addEventListener("DOMContentLoaded", function () {
     // Sidebar toggle functionality for smaller screens
     const sidebarToggle = document.querySelector(".navbar-toggler");
@@ -7,38 +5,70 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (sidebarToggle && sidebarMenu) {
         sidebarToggle.addEventListener("click", () => {
-            sidebarMenu.classList.toggle("collapse");
+            sidebarMenu.classList.toggle("collapsed");
         });
     }
 
-    // Dynamic content update placeholder
+    // Dynamic content update with spinner
     const updateSection = () => {
         const mainContent = document.querySelector(".main-content");
         if (mainContent) {
-            mainContent.innerHTML = "<p>Dynamic content loaded!</p>";
+            mainContent.innerHTML = "<div class='spinner-border text-primary' role='status'><span class='visually-hidden'>Loading...</span></div>";
+            setTimeout(() => {
+                mainContent.innerHTML = "<p>Dynamic content loaded!</p>";
+            }, 1000);
         }
     };
 
-    // Example: Trigger dynamic update on button click
     const updateButton = document.querySelector("#updateContentBtn");
     if (updateButton) {
         updateButton.addEventListener("click", updateSection);
     }
 
-    // Active state toggling for sidebar links
-    const sidebarLinks = document.querySelectorAll(".sidebar .nav-link");
-    sidebarLinks.forEach(link => {
-        link.addEventListener("click", function () {
-            sidebarLinks.forEach(l => l.classList.remove("active"));
-            this.classList.add("active");
+    // Active state toggling with delegation
+    const sidebar = document.querySelector(".sidebar");
+    if (sidebar) {
+        sidebar.addEventListener("click", function (e) {
+            if (e.target.classList.contains("nav-link")) {
+                const sidebarLinks = sidebar.querySelectorAll(".nav-link");
+                sidebarLinks.forEach(l => l.classList.remove("active"));
+                e.target.classList.add("active");
+            }
         });
-    });
+    }
 
-    // Placeholder functionality for chart loading (if applicable)
+    // Placeholder functionality for charts
     const loadCharts = () => {
         console.log("Charts will load here if implemented.");
-        // You can integrate Chart.js or another library here
+        // Example chart integration
     };
     loadCharts();
 });
+document.body.addEventListener("click", function (event) {
+    const clickedElement = event.target;
+    const elementId = clickedElement.id || null;
+    const elementTag = clickedElement.tagName;
 
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch('/accounts/capture-click/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({
+            url: window.location.href,
+            element_id: elementId,
+            element_tag: elementTag,
+        }),
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then((data) => console.log('Success:', data))
+    .catch((error) => console.error('Error:', error));
+});

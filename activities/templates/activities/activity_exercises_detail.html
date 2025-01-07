@@ -97,10 +97,18 @@
             <p class="text-muted">No questions available for this exercise.</p>
         {% endif %}
     </div>
+   <h3>submission </h3>
+
+       
+            
+            <a href="{% url 'activities:submit_exercise' exercise.slug %}" class="btn btn-success">Submit</a>
+        
+    
+</ul>
 
     <!-- Back Button -->
     <div class="text-center mt-4">
-        <a href="{% url 'activities:exercise_list' %}" class="btn btn-secondary">Back to Exercise List</a>
+        <a href="{% url 'courses:activity_list' %}" class="btn btn-secondary">Back to Exercise List</a>
     </div>
 </div>
 {% endblock %}

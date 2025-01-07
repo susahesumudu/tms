@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Exercise,StudentActivityLog, Question, Skill, Quiz,Submission,Choice,QuizSubmission,GradingRubric,QuizQuestion
+from .models import Exercise,StudentActivityLog, Question, Skill, Quiz,Submission,Choice,QuizSubmission,GradingRubric,QuizQuestion,MarksTracker
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
@@ -30,4 +30,4 @@ admin.site.register(Choice)
 admin.site.register(Skill)
 admin.site.register(GradingRubric)
 admin.site.register(QuizQuestion)
-
+admin.site.register(MarksTracker)

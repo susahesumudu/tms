@@ -311,3 +311,84 @@ class ActivityExerciseAddQuestion(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         # Redirect to the exercise details page after adding a question
         return reverse_lazy('activities:exercise_detail_questions', kwargs={'slug': self.kwargs['slug']})
+
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .models import Submission
+from .forms import GradeSubmissionForm
+
+class GradeExerciseView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Submission
+    template_name = 'activities/grade_exercise.html'
+    form_class = GradeSubmissionForm
+    context_object_name = 'submission'
+
+    def test_func(self):
+        # Ensure the user is a teacher
+        return self.request.user.groups.filter(name='Teacher').exists()
+
+    def handle_no_permission(self):
+        # Redirect unauthorized users
+        return redirect('unauthorized')
+
+    def get_object(self):
+        # Get the submission object based on slug
+        return get_object_or_404(Submission, slug=self.kwargs.get('slug'))
+
+    def form_valid(self, form):
+        # Automatically assign the current user as the grader
+        submission = form.save(commit=False)
+        submission.graded_by = self.request.user
+        submission.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirect to a page showing ungraded submissions or teacher dashboard
+        return reverse_lazy('teacher_dashboard')
+
+
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import FormView
+from .models import Exercise, Submission
+from .forms import ExerciseSubmissionForm
+from django.utils.timezone import now
+
+class SubmitExerciseView(LoginRequiredMixin, FormView):
+    template_name = 'activities/submit_exercise.html'
+    form_class = ExerciseSubmissionForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['exercise'] = get_object_or_404(Exercise, slug=self.kwargs.get('slug'))
+        context['existing_submission'] = Submission.objects.filter(
+            student=self.request.user, exercise=context['exercise']
+        ).first()
+        return context
+
+    def form_valid(self, form):
+        # Fetch the exercise object
+        exercise = get_object_or_404(Exercise, slug=self.kwargs.get('slug'))
+
+        # Use get_or_create to avoid duplicates
+        submission, created = Submission.objects.get_or_create(
+            student=self.request.user,
+            exercise=exercise,
+            defaults={'submitted_file': form.cleaned_data['submitted_file']}
+        )
+
+        # Update submission if it already exists
+        if not created:
+            submission.submitted_file = form.cleaned_data['submitted_file']
+            submission.submitted_at = now()
+            submission.save()
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('student_dashboard')
