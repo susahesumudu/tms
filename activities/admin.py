@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Exercise, Question, Skill, Quiz,Submission,Choice,QuizSubmission,GradingRubric,QuizQuestion
+from .models import Exercise,StudentActivityLog, Question, Skill, Quiz,Submission,Choice,QuizSubmission,GradingRubric,QuizQuestion
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
@@ -23,8 +23,8 @@ class QuizAdmin(admin.ModelAdmin):
     get_deadline.short_description = 'Deadline'
 
 admin.site.register(Submission)
+admin.site.register(StudentActivityLog)
 admin.site.register(QuizSubmission)
-
 admin.site.register(Question)
 admin.site.register(Choice)
 admin.site.register(Skill)

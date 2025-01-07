@@ -29,6 +29,7 @@ urlpatterns = [
     path('activities/', include('activities.urls')),
     path('dashboard/', include('dashboard.urls')),  # Include dashboard app URLs
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
+        path('predictions/', include('predictions.urls')),
 ]
 
 if settings.DEBUG:

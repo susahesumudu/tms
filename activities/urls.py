@@ -23,16 +23,16 @@ urlpatterns += [
              views.MarkQuestionCompletedView.as_view(), name='mark_question_completed'),            
             
             path(
-                'activity/<int:pk>/exercises',
+                'activity/<slug:slug>/exercises',
              views.ActivityExerciseListView.as_view(), name='activity_exercises_list'),            
             
              path(
-                'exercises/<int:exid>/questions',
+                'exercises/<slug:slug>/questions',
              views.ActivityExerciseDetailView.as_view(), name='exercise_detail_quesions'),            
             
             
              path(
-                'exercises/<int:exid>/questions/new',
+                'exercises/<slug:slug>/questions/new',
              views.ActivityExerciseAddQuestion.as_view(), name='exercise_new_quesions'),            
             
             ]

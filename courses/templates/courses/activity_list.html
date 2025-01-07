@@ -38,18 +38,19 @@
                         <td>{{ item.id }}</td>
                         <td><a href="#">{{ item.task }}</a></td>
                         <td>{{ item.activity_name }}</td>
-                        <td><a href="{% url 'activities:activity_exercises_list' pk=item.pk %}">{{ item.activity_code }}</a></td>
+                       <td><a href="{% url 'activities:activity_exercises_list' slug=item.slug %}">{{ item.activity_code }}</a></td>
+
                         <td>{{ item.session }}</td>
                         <td>{{ item.activity_type }}</td>
                         <td>
                             <div class="btn-group" role="group" aria-label="Activity Actions">
-                                <a href="{% url 'courses:activity_detail' pk=item.pk %}" class="btn btn-sm btn-info text-white">
+                                <a href="{% url 'courses:activity_detail' slug=item.slug %}" class="btn btn-sm btn-info text-white">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{% url 'courses:activity_update' pk=item.pk %}" class="btn btn-sm btn-warning text-white">
+                                <a href="{% url 'courses:activity_update' slug=item.slug %}" class="btn btn-sm btn-warning text-white">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="{% url 'courses:activity_delete' pk=item.pk %}" class="btn btn-sm btn-danger">
+                                <a href="{% url 'courses:activity_delete' slug=item.slug %}" class="btn btn-sm btn-danger">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>

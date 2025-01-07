@@ -1,14 +1,9 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-
-from django.urls import reverse_lazy
-
-from django.apps import apps
-
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.apps import apps
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 class BaseListView(LoginRequiredMixin, ListView):
     context_object_name = 'items'
@@ -30,7 +25,7 @@ class BaseDetailView(LoginRequiredMixin, DetailView):
     def get_object(self):
         try:
             model = apps.get_model(app_label=self.kwargs['app_name'], model_name=self.kwargs['model'])
-            return model.objects.get(pk=self.kwargs['pk'])
+            return model.objects.get(slug=self.kwargs['slug'])
         except (LookupError, model.DoesNotExist):
             raise Http404("Object not found")
 
@@ -61,7 +56,7 @@ class BaseUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         try:
             model = apps.get_model(app_label=self.kwargs['app_name'], model_name=self.kwargs['model'])
-            return model.objects.get(pk=self.kwargs['pk'])
+            return model.objects.get(slug=self.kwargs['slug'])
         except (LookupError, model.DoesNotExist):
             raise Http404("Object not found")
 
@@ -77,7 +72,7 @@ class BaseDeleteView(LoginRequiredMixin, DeleteView):
     def get_object(self):
         try:
             model = apps.get_model(app_label=self.kwargs['app_name'], model_name=self.kwargs['model'])
-            return model.objects.get(pk=self.kwargs['pk'])
+            return model.objects.get(slug=self.kwargs['slug'])
         except (LookupError, model.DoesNotExist):
             raise Http404("Object not found")
 
@@ -86,6 +81,3 @@ class BaseDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy(f"{self.kwargs['app_name']}:{self.kwargs['model'].lower()}_list")
-
-
-

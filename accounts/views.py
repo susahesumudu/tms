@@ -145,81 +145,121 @@ from .models import ClickLog, Activity, Exercise
 logger = logging.getLogger(__name__)
 
 def get_client_ip(request):
-    """Utility to extract the client's IP address."""
+    """
+    Utility to extract the client's IP address.
+    """
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
+        ip = x_forwarded_for.split(',')[0].strip()  # Take the first IP in the chain
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
+def get_client_ip(request):
+    """
+    Utility to extract the client's IP address.
+    """
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0].strip()
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
 def capture_click(request):
-    if request.method == "POST":
-        try:
-            # Parse and log incoming JSON payload
-            data = json.loads(request.body)
-            logger.info(f"Click data received: {data}")
+    """
+    Handles click capture events, logging click details to the database.
+    """
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method. Only POST is allowed."}, status=405)
 
-            # Extract data from the request
-            url = data.get('url')
-            element_id = data.get('element_id')  # Optional: Can be null
-            element_tag = data.get('element_tag')
-            ip_address = get_client_ip(request)
-            user_agent = request.META.get('HTTP_USER_AGENT', '')
+    if request.content_type != "application/json":
+        return JsonResponse({"error": "Invalid content type. Expected 'application/json'"}, status=400)
 
-            # Validate required fields
-            if not url or not element_tag:
-                logger.error("Missing required fields: 'url' or 'element_tag'")
-                return JsonResponse(
-                    {"error": "Missing required fields: 'url' and 'element_tag' are mandatory."},
-                    status=400
-                )
+    try:
+        # Parse JSON payload
+        data = json.loads(request.body)
+        logger.info(f"Click data received: {data}")
 
-            # Extract activity or exercise from the URL
-            activity = None
-            exercise = None
-            if 'activity' in url:
-                activity_id = extract_id_from_url(url, "activity")
-                print(activity_id)
-                if activity_id:
-                    activity = get_object_or_404(Activity, id=activity_id)
+        # Extract data from JSON
+        url = data.get('url')
+        element_id = data.get('element_id')
+        element_tag = data.get('element_tag')
+        ip_address = get_client_ip(request)
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
 
-            if 'exercise' in url:
-                exercise_id = extract_id_from_url(url, "exercise")
-                if exercise_id:
-                    exercise = get_object_or_404(Exercise, id=exercise_id)
-
-            # Save the click log to the database
-            ClickLog.objects.create(
-                url=url,
-                element_id=element_id,  # Can be null
-                element_tag=element_tag,
-                user=request.user if request.user.is_authenticated else None,
-                activity=activity,
-                exercise=exercise,
-                ip_address=ip_address,
-                user_agent=user_agent
+        # Validate required fields
+        if not url or not element_tag:
+            return JsonResponse(
+                {"error": "Missing required fields: 'url' and 'element_tag' are mandatory."},
+                status=400
             )
-            logger.info("Click successfully logged.")
-            return JsonResponse({"message": "Click recorded successfully"}, status=201)
 
-        except json.JSONDecodeError:
-            logger.error("Invalid JSON payload")
-            return JsonResponse({"error": "Invalid JSON payload"}, status=400)
+        # Extract slugs for activity and exercise
+        slugs = extract_slug(url)
+        activity_slug = slugs.get('activity_slug')
+        exercise_slug = slugs.get('exercise_slug')
 
-        except Exception as e:
-            logger.error(f"Unexpected error while processing click: {e}")
-            return JsonResponse({"error": f"Unexpected error: {str(e)}"}, status=500)
+        activity = None
+        exercise = None
 
-    # Handle invalid request methods
-    logger.warning("Invalid request method")
-    return JsonResponse({"error": "Invalid request method. Only POST is allowed."}, status=405)
+        if activity_slug:
+            activity = get_object_or_404(Activity, slug=activity_slug)
 
-def extract_id_from_url(url, type_name):
-    """Extract ID from URL for activity or exercise."""
+        if exercise_slug:
+            exercise = get_object_or_404(Exercise, slug=exercise_slug)
+
+        # Save ClickLog
+        ClickLog.objects.create(
+            url=url,
+            element_id=element_id,
+            element_tag=element_tag,
+            user=request.user if request.user.is_authenticated else None,
+            activity=activity,
+            exercise=exercise,
+            ip_address=ip_address,
+            user_agent=user_agent
+        )
+
+        logger.info("Click successfully logged.")
+        return JsonResponse({"message": "Click recorded successfully"}, status=201)
+
+    except json.JSONDecodeError:
+        logger.error("Invalid JSON payload")
+        return JsonResponse({"error": "Invalid JSON payload"}, status=400)
+
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return JsonResponse({"error": f"Unexpected error occurred: {str(e)}"}, status=500)
+
+def extract_slug(url):
+    """
+    Extract the slug from the URL for both exercise and activity.
+
+    Args:
+        url (str): The URL string to parse.
+
+    Returns:
+        dict: A dictionary containing the slugs for 'exercise' and 'activity', if found.
+    """
     import re
-    pattern = rf"{type_name}/(\d+)"
-    match = re.search(pattern, url)
-    if match:
-        return int(match.group(1))
-    return None
+
+    # Patterns for exercise and activity slugs
+    exercise_pattern = r"exercises/([\w-]+)"
+    activity_pattern = r"activity/([\w-]+)"
+
+    # Initialize result
+    result = {'activity_slug': None, 'exercise_slug': None}
+
+    # Match for activity slug
+    activity_match = re.search(activity_pattern, url)
+    if activity_match:
+        result['activity_slug'] = activity_match.group(1)
+
+    # Match for exercise slug
+    exercise_match = re.search(exercise_pattern, url)
+    if exercise_match:
+        result['exercise_slug'] = exercise_match.group(1)
+
+    return result

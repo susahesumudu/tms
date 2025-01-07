@@ -26,9 +26,9 @@
       <td>{{ item.max_score }}</td>
       <td>{{ item.created_at }}</td>
       <td>
-        <a href="{% url 'activities:exercise_detail' pk=item.pk %}">View</a>
-        <a href="{% url 'activities:exercise_update' pk=item.pk %}">Edit</a>
-        <a href="{% url 'activities:exercise_delete' pk=item.pk %}">Delete</a>
+        <a href="{% url 'activities:exercise_detail' slug=item.slug %}">View</a>
+        <a href="{% url 'activities:exercise_update' slug=item.slug %}">Edit</a>
+        <a href="{% url 'activities:exercise_delete' slug=item.slug %}">Delete</a>
       </td>
     </tr>
     {% empty %}

@@ -1,22 +1,80 @@
 {% extends 'base_detail.html' %}
 {% block content %}
-<h1>{ model|capfirst } Detail</h1>
-<p>Id: {{ item.id }}</p>
-<p>Course_name: {{ item.course_name }}</p>
-<p>Course_code: {{ item.course_code }}</p>
-<p>Entry_qualification: {{ item.entry_qualification }}</p>
-<p>Medium: {{ item.medium }}</p>
-<p>Course_duration_months: {{ item.course_duration_months }}</p>
-<p>Delivery_mode: {{ item.delivery_mode }}</p>
-<p>Course_mode: {{ item.course_mode }}</p>
-<p>Curriculum_availability: {{ item.curriculum_availability }}</p>
-<p>No_of_batches_per_year: {{ item.no_of_batches_per_year }}</p>
-<p>Max_students_per_batch: {{ item.max_students_per_batch }}</p>
-<p>Course_fee: {{ item.course_fee }}</p>
-<p>Course_cost: {{ item.course_cost }}</p>
-<p>Is_active: {{ item.is_active }}</p>
-<p>Created_at: {{ item.created_at }}</p>
-<p>Updated_at: {{ item.updated_at }}</p>
-<p>Theory_hrs: {{ item.theory_hrs }}</p>
-<p>Practical_hrs: {{ item.practical_hrs }}</p>
+<div class="container mt-4">
+    <div class="accordion" id="courseDetailAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="generalInfoHeading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#generalInfoCollapse" aria-expanded="true" aria-controls="generalInfoCollapse">
+                    General Information
+                </button>
+            </h2>
+            <div id="generalInfoCollapse" class="accordion-collapse collapse show" aria-labelledby="generalInfoHeading" data-bs-parent="#courseDetailAccordion">
+                <div class="accordion-body">
+                    <p><strong>Id:</strong> {{ item.id }}</p>
+                    <p><strong>Course Name:</strong> {{ item.course_name }}</p>
+                    <p><strong>Course Code:</strong> {{ item.course_code }}</p>
+                    <p><strong>Entry Qualification:</strong> {{ item.entry_qualification }}</p>
+                    <p><strong>Medium:</strong> {{ item.medium }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="durationInfoHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#durationInfoCollapse" aria-expanded="false" aria-controls="durationInfoCollapse">
+                    Duration and Mode
+                </button>
+            </h2>
+            <div id="durationInfoCollapse" class="accordion-collapse collapse" aria-labelledby="durationInfoHeading" data-bs-parent="#courseDetailAccordion">
+                <div class="accordion-body">
+                    <p><strong>Course Duration (Months):</strong> {{ item.course_duration_months }}</p>
+                    <p><strong>Delivery Mode:</strong> {{ item.delivery_mode }}</p>
+                    <p><strong>Course Mode:</strong> {{ item.course_mode }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="availabilityInfoHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#availabilityInfoCollapse" aria-expanded="false" aria-controls="availabilityInfoCollapse">
+                    Availability and Batch Information
+                </button>
+            </h2>
+            <div id="availabilityInfoCollapse" class="accordion-collapse collapse" aria-labelledby="availabilityInfoHeading" data-bs-parent="#courseDetailAccordion">
+                <div class="accordion-body">
+                    <p><strong>Curriculum Availability:</strong> {{ item.curriculum_availability }}</p>
+                    <p><strong>No. of Batches per Year:</strong> {{ item.no_of_batches_per_year }}</p>
+                    <p><strong>Max Students per Batch:</strong> {{ item.max_students_per_batch }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="financialInfoHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#financialInfoCollapse" aria-expanded="false" aria-controls="financialInfoCollapse">
+                    Financial Information
+                </button>
+            </h2>
+            <div id="financialInfoCollapse" class="accordion-collapse collapse" aria-labelledby="financialInfoHeading" data-bs-parent="#courseDetailAccordion">
+                <div class="accordion-body">
+                    <p><strong>Course Fee:</strong> {{ item.course_fee }}</p>
+                    <p><strong>Course Cost:</strong> {{ item.course_cost }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="additionalInfoHeading">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#additionalInfoCollapse" aria-expanded="false" aria-controls="additionalInfoCollapse">
+                    Additional Information
+                </button>
+            </h2>
+            <div id="additionalInfoCollapse" class="accordion-collapse collapse" aria-labelledby="additionalInfoHeading" data-bs-parent="#courseDetailAccordion">
+                <div class="accordion-body">
+                    <p><strong>Is Active:</strong> {{ item.is_active }}</p>
+                    <p><strong>Created At:</strong> {{ item.created_at }}</p>
+                    <p><strong>Updated At:</strong> {{ item.updated_at }}</p>
+                    <p><strong>Theory Hours:</strong> {{ item.theory_hrs }}</p>
+                    <p><strong>Practical Hours:</strong> {{ item.practical_hrs }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

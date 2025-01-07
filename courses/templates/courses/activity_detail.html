@@ -51,10 +51,10 @@
                 </tbody>
             </table>
             <div class="mt-3 text-end">
-                <a href="{% url 'courses:activity_update' pk=item.pk %}" class="btn btn-warning btn-sm">
+                <a href="{% url 'courses:activity_update' slug=item.slug %}" class="btn btn-warning btn-sm">
                     <i class="bi bi-pencil"></i> Edit
                 </a>
-                <a href="{% url 'courses:activity_delete' pk=item.pk %}" class="btn btn-danger btn-sm">
+                <a href="{% url 'courses:activity_delete' slug=item.slug %}" class="btn btn-danger btn-sm">
                     <i class="bi bi-trash"></i> Delete
                 </a>
                 <a href="{% url 'courses:activity_list' %}" class="btn btn-secondary btn-sm">

@@ -33,43 +33,69 @@
     </div>
 
     <!-- Questions Section -->
-    <div class="card shadow mt-4 mb-4">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h2 class="h5 mb-0">Questions</h2>
-            <!-- Add Question Button -->
-            <a href="{% url 'activities:exercise_new_quesions' exercise.id %}" class="btn btn-sm btn-success">Add Question</a>
-        </div>
-        <div class="card-body">
-            <div class="accordion" id="accordionQuestions">
-                {% if questions %}
-                    <ul class="list-group">
-                        {% for question in questions %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>Question {{ forloop.counter }}:</strong> {{ question.text }}
-                                    <br>
-                                    <strong>Weighting:</strong> {{ question.weighting }}
-                                    {% if question.tutorial_url %}
-                                        <br><a href="{{ question.tutorial_url }}" target="_blank">Tutorial</a>
-                                    {% endif %}
-                                    {% if question.video_url %}
-                                        <br><a href="{{ question.video_url }}" target="_blank">Video</a>
-                                    {% endif %}
-                                </div>
-                                <div>
-                                    <!-- Edit Question Button -->
-                                    <a href="{% url 'activities:question_update' question.id %}" class="btn btn-sm btn-warning me-2"><i class="bi bi-pencil"></i></a>
-                                    <!-- Delete Question Button -->
-                                    <a href="{% url 'activities:question_delete' question.id %}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p class="text-muted">No questions available for this exercise.</p>
-                {% endif %}
-            </div>
-        </div>
+    <div class="accordion mt-4" id="accordionQuestions">
+        {% if questions %}
+            {% for question in questions %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingQuestion{{ forloop.counter }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseQuestion{{ forloop.counter }}" aria-expanded="false" aria-controls="collapseQuestion{{ forloop.counter }}">
+                            <i class="bi bi-question-circle me-2"></i> Question {{ forloop.counter }}
+                        </button>
+                    </h2>
+                    <div id="collapseQuestion{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="headingQuestion{{ forloop.counter }}" data-bs-parent="#accordionQuestions">
+                        <div class="accordion-body">
+                            <p class="mb-0"><strong>Text:</strong> {{ question.text }}</p>
+                            <p><strong>Weighting:</strong> {{ question.weighting }}</p>
+
+                            <!-- Skills Section -->
+                            <p><strong>Skills:</strong></p>
+                            <div>
+                                {% for skill in skills %}
+                                    <span class="badge 
+                                        {% if exercise.get_difficulty_level_display == 'Easy' %}bg-success
+                                        {% elif exercise.get_difficulty_level_display == 'Medium' %}bg-warning
+                                        {% elif exercise.get_difficulty_level_display == 'Hard' %}bg-danger
+                                        {% endif %}">
+                                        {{ skill.skill_name }}: {{ skill.skill_score }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+    <!-- Left Section: Empty Space or Placeholder -->
+    <div></div>
+
+    <!-- Right Section: Links -->
+    <div>
+        {% if question.tutorial_url %}
+            <a href="{{ question.tutorial_url }}" class="btn btn-info btn-sm me-2" target="_blank">
+                <i class="bi bi-book"></i> Tutorial
+            </a>
+        {% endif %}
+        {% if question.video_url %}
+            <a href="{{ question.video_url }}" class="btn btn-warning btn-sm me-2" target="_blank">
+                <i class="bi bi-play-circle"></i> Watch Video
+            </a>
+        {% endif %}
+
+        {% if is_teacher %}
+            <a href="{% url 'activities:question_update' question.id %}" class="btn btn-sm btn-warning me-2">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{% url 'activities:question_delete' question.id %}" class="btn btn-sm btn-danger">
+                <i class="bi bi-trash"></i>
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No questions available for this exercise.</p>
+        {% endif %}
     </div>
 
     <!-- Back Button -->

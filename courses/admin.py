@@ -296,6 +296,7 @@ class ActivityAdmin(admin.ModelAdmin):
         'no_of_sessions',
         'created_at',
         'updated_at',
+        'slug',
     )
     search_fields = ('activity_code', 'activity_name', 'task__name', 'activity_type')
     list_filter = ('activity_type', 'task', 'session')

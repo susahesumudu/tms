@@ -38,16 +38,16 @@
                        
                         <td class="text-center">
                             <div class="btn-group" role="group" aria-label="Exercise Actions">
-                                 <a href="{% url 'activities:exercise_detail_quesions' exid=item.id %}" class="btn btn-sm btn-success text-white">
+                                 <a href="{% url 'activities:exercise_detail_quesions' slug=item.slug %}" class="btn btn-sm btn-success text-white">
                                     <i class="bi bi-eye"></i>Quesions
                                 </a>
-                                <a href="{% url 'activities:exercise_detail' pk=item.pk %}" class="btn btn-sm btn-info text-white">
+                                <a href="{% url 'activities:exercise_detail' slug=item.slug %}" class="btn btn-sm btn-info text-white">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{% url 'activities:exercise_update' pk=item.pk %}" class="btn btn-sm btn-warning text-white">
+                                <a href="{% url 'activities:exercise_update' slug=item.slug %}" class="btn btn-sm btn-warning text-white">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="{% url 'activities:exercise_delete' pk=item.pk %}" class="btn btn-sm btn-danger">
+                                <a href="{% url 'activities:exercise_delete' slug=item.slug %}" class="btn btn-sm btn-danger">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>

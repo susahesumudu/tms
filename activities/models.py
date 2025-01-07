@@ -253,7 +253,7 @@ class StudentActivityLog(models.Model):
     slug = models.SlugField(max_length=200, unique=True, blank=True) 
 
     def __str__(self):
-        return f"{self.activity_code} - {self.code_presentation} - {self.id_student}"
+        return f"{self.activity_code} - {self.exercise_code} - {self.id_student}"
 
     class Meta:
         verbose_name = "Student Activity Log"
