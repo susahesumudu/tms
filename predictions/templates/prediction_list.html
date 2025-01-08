@@ -48,11 +48,9 @@
                             <td class="text-center">{{ prediction.predicted_grade }}</td>
                             <td class="text-center">
                                 <div class="btn-group" role="group" aria-label="Prediction Actions">
-                                    {% if prediction.predicted_grade %}
-                                    <a href="{% url 'predictions:send_email' prediction.id %}" class="btn btn-sm btn-success">
-                                        <i class="bi bi-envelope-fill me-1"></i>  
-                                    </a>
-                                    {% else %}
+                                    
+                                   
+                                 
                                    <!-- Predict Button -->
                                     <button
                                         type="button"
@@ -90,8 +88,10 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    {% endif %}
+                                     <a href="{% url 'predictions:send_email' prediction.id %}" class="btn btn-sm btn-success">
+                                        <i class="bi bi-envelope-fill me-1"></i>Send
+                                    </a>    
+                              
                                 </div>
                             </td>
                         </tr>

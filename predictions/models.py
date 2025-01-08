@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from django.db.models import Sum
 
 class Prediction(models.Model):
     code = models.CharField(max_length=10, unique=True, blank=True)  # Allow blank to auto-generate
@@ -19,7 +20,15 @@ class Prediction(models.Model):
     prediction_date = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True, max_length=100, blank=True)  # Allow blank to auto-generate
 
+    def calculate_assessment_score(self):
+        # Calculate the sum of scores from related submissions
+        total_score = Submission.objects.filter(student=self.student).aggregate(Sum('score'))['score__sum'] or 0
+        self.assessment_score = total_score
+
     def save(self, *args, **kwargs):
+        # Auto-calculate assessment score before saving
+        #self.calculate_assessment_score()
+
         # Auto-generate unique code if not set
         if not self.code:
             self.code = str(uuid.uuid4())[:8]  # Shorten UUID to fit max_length=10
