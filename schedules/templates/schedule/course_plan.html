@@ -1,41 +1,155 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Plan Gantt Chart</title>
-    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-bundle.min.js"></script>
-</head>
-<body>
-    <h1>Gantt Chart for {{ course_plan.course.course_name }}</h1>
-    <p>Batch Start Date: {{ course_plan.course.batch_set.first.from_date }}</p>
-    <p>Batch End Date: {{ course_plan.course.batch_set.first.to_date }}</p>
+{% extends "base.html" %}
 
-    <div id="ganttChartContainer" style="width: 100%; height: 600px;"></div>
+{% block title %}
+    Editable Course Plans
+{% endblock %}
 
-    <script>
-        // Fetch the Gantt data from context
-        const ganttData = JSON.parse('{{ gantt_data|safe }}');
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Editable Course Plans</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Batch Code</th>
+                <th>Course Name</th>
+                <th>Coordinator</th>
+                <th>Total Duration (hours)</th>
+                <th>Commencement Date</th>
+                <th>Completion Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course_plan in course_plans %}
+            <tr data-id="{{ course_plan.id }}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ course_plan.batch.batch_code }}</td>
+                <td>{{ course_plan.batch.course.course_name }}</td>
+                <td>{{ course_plan.coordinator_name }}</td>
+                <td>{{ course_plan.total_duration }}</td>
+                <td>{{ course_plan.commencement_date }}</td>
+                <td>{{ course_plan.completion_date }}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary edit-btn" data-id="{{ course_plan.id }}"
+                        data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-        // Map data into AnyChart Gantt format
-        const chartData = ganttData.map((item) => ({
-            id: item.module_name,
-            name: item.module_name,
-            actualStart: item.to_date,
-            actualEnd: item.end_date,
-        }));
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Course Plan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="coursePlanId">
+                    <div class="mb-3">
+                        <label for="batchCode" class="form-label">Batch Code</label>
+                        <input type="text" class="form-control" id="batchCode">
+                    </div>
+                    <div class="mb-3">
+                        <label for="courseName" class="form-label">Course Name</label>
+                        <input type="text" class="form-control" id="courseName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="coordinator" class="form-label">Coordinator</label>
+                        <input type="text" class="form-control" id="coordinator">
+                    </div>
+                    <div class="mb-3">
+                        <label for="totalDuration" class="form-label">Total Duration (hours)</label>
+                        <input type="number" class="form-control" id="totalDuration">
+                    </div>
+                    <div class="mb-3">
+                        <label for="commencementDate" class="form-label">Commencement Date</label>
+                        <input type="date" class="form-control" id="commencementDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="completionDate" class="form-label">Completion Date</label>
+                        <input type="date" class="form-control" id="completionDate">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save-btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // Create a Gantt chart
-        anychart.onDocumentReady(function () {
-            const chart = anychart.ganttProject();
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const editForm = document.getElementById('editForm');
+        const editModal = document.getElementById('editModal');
+        const saveButton = document.querySelector('.save-btn');
 
-            // Add data to the chart
-            chart.data(chartData);
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const row = button.closest('tr');
+                const id = button.dataset.id;
 
-            // Configure the chart
-            chart.container("ganttChartContainer");
-            chart.draw();
+                // Populate modal fields with row data
+                document.getElementById('coursePlanId').value = id;
+                document.getElementById('batchCode').value = row.cells[1].textContent.trim();
+                document.getElementById('courseName').value = row.cells[2].textContent.trim();
+                document.getElementById('coordinator').value = row.cells[3].textContent.trim();
+                document.getElementById('totalDuration').value = row.cells[4].textContent.trim();
+                document.getElementById('commencementDate').value = row.cells[5].textContent.trim();
+                document.getElementById('completionDate').value = row.cells[6].textContent.trim();
+            });
         });
-    </script>
-</body>
-</html>
+
+        saveButton.addEventListener('click', () => {
+            const id = document.getElementById('coursePlanId').value;
+
+            const updates = {
+                batch_code: document.getElementById('batchCode').value,
+                course_name: document.getElementById('courseName').value,
+                coordinator_name: document.getElementById('coordinator').value,
+                total_duration: document.getElementById('totalDuration').value,
+                commencement_date: document.getElementById('commencementDate').value,
+                completion_date: document.getElementById('completionDate').value,
+            };
+
+            // Send updated data to server
+            fetch("{% url 'schedule:update_course_plan' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ id, updates })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(data.message);
+                    // Update the table row with new data
+                    const row = document.querySelector(`tr[data-id='${id}']`);
+                    row.cells[1].textContent = updates.batch_code;
+                    row.cells[2].textContent = updates.course_name;
+                    row.cells[3].textContent = updates.coordinator_name;
+                    row.cells[4].textContent = updates.total_duration;
+                    row.cells[5].textContent = updates.commencement_date;
+                    row.cells[6].textContent = updates.completion_date;
+
+                    // Close the modal
+                    const modal = bootstrap.Modal.getInstance(editModal);
+                    modal.hide();
+                } else {
+                    console.error(data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+</script>
+{% endblock %}

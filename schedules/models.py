@@ -15,7 +15,7 @@ class PlanBase(models.Model):
 
 # Course Plan Model
 class CoursePlan(PlanBase):
-    course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name="course_plan")
+    batch = models.OneToOneField(Batch, on_delete=models.CASCADE, related_name="batch_plan")
     coordinator_name = models.CharField(max_length=100)
     total_duration = models.PositiveIntegerField(help_text="Total duration of the course in hours")
     commencement_date = models.DateField()
@@ -23,7 +23,7 @@ class CoursePlan(PlanBase):
     overview = models.TextField(help_text="General overview or objectives of the course")
 
     def __str__(self):
-        return f"Course Plan for {self.course.course_name}"
+        return f"Course Plan for {self.batch.course.course_name}"
 
 class CoursePlanModules(models.Model):
     course_plan = models.ForeignKey(CoursePlan, on_delete=models.CASCADE, related_name="modules")

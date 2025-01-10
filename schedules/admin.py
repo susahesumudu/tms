@@ -11,17 +11,13 @@ from .models import (
 )
 
 
-class CoursePlanModulesInline(admin.TabularInline):
-    model = CoursePlanModules
-    extra = 1
-
 
 @admin.register(CoursePlan)
 class CoursePlanAdmin(admin.ModelAdmin):
-    list_display = ("course", "coordinator_name", "total_duration", "commencement_date", "completion_date")
-    search_fields = ("course__course_name", "coordinator_name")
+    list_display = ("batch", "coordinator_name", "total_duration", "commencement_date", "completion_date")
+    search_fields = ( "coordinator_name",)
     list_filter = ("commencement_date", "completion_date")
-    inlines = [CoursePlanModulesInline]
+
 
 
 class TrainingPlanModuleInline(admin.TabularInline):

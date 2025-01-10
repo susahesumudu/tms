@@ -12,6 +12,7 @@
         <!-- Navigation Links -->
         {% for group in user.groups.all %}
             {% if group.name == 'Teacher' %}
+
             <ul class="nav flex-column">
                 <!-- Dashboard -->
                 <li class="nav-item mb-2">
@@ -55,8 +56,9 @@
             <li class="nav-item mb-2">
           <hr>
         </li>
+
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'schedule:course_plan' %}"  class="nav-link text-white d-flex align-items-center">
                     <i class="bi bi-calendar-event me-2"></i> Course Plans
                 </a>
             </li>

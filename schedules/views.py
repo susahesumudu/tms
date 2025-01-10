@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 from django.http import Http404
 from .models import CoursePlan, TrainingPlan, WeeklyPlan, LessonPlan
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend for server-side rendering
@@ -156,7 +157,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 import json
 from datetime import timedelta
 
-class CoursePlanView(PlanBaseView):
+class CoursePlanViewss(PlanBaseView):
     template_name = "schedule/course_plan.html"
     model = CoursePlan
     object_name = "course_plan"
@@ -204,18 +205,63 @@ def get_context_data(self, **kwargs):
     except CoursePlan.DoesNotExist:
         raise Http404("Course Plan not found.")
 
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.views.generic import TemplateView
 
-class TrainingPlanView(PlanBaseView):
+from django.views.generic.list import ListView
+from .models import CoursePlan
+
+class CoursePlanView(ListView):
+    template_name = "schedule/course_plan.html"
+    model = CoursePlan
+    context_object_name = "course_plans"
+
+    def get_queryset(self):
+        # Ensure no unintended filtering excludes your object
+        return CoursePlan.objects.all()
+
+import json
+from django.http import JsonResponse
+from django.views import View
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from .models import CoursePlan
+
+@method_decorator(csrf_exempt, name='dispatch')
+class UpdateCoursePlanView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            course_plan_id = data.get("id")
+            updates = data.get("updates", {})
+
+            course_plan = CoursePlan.objects.get(id=course_plan_id)
+            for field, value in updates.items():
+                if hasattr(course_plan, field):
+                    setattr(course_plan, field, value)
+            course_plan.save()
+
+            return JsonResponse({"success": True, "message": "Updated successfully!"})
+        except CoursePlan.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Course plan not found."})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+
+
+
+
+class TrainingPlanView(ListView):
     template_name = "schedule/training_plan.html"
     model = TrainingPlan
     object_name = "training_plan"
 
-class WeeklyPlanView(PlanBaseView):
+class WeeklyPlanView(ListView):
     template_name = "schedule/weekly_plan.html"
     model = WeeklyPlan
     object_name = "weekly_plan"
 
-class LessonPlanView(PlanBaseView):
+class LessonPlanView(ListView):
     template_name = "schedule/lesson_plan.html"
     model = LessonPlan
     object_name = "lesson_plan"
